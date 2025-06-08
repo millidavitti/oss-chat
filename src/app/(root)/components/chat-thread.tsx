@@ -33,7 +33,7 @@ export default function ChatThread({ thread }: { thread: number }) {
 
 			{chat_thread === thread && (
 				<AnimatePresence>
-					<ChatThreadOptions p={thread} />
+					<ChatThreadOptions thread={thread} />
 				</AnimatePresence>
 			)}
 		</Flex>
