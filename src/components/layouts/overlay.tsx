@@ -1,10 +1,10 @@
 "use client";
 
 import {
-	Root_UI_Layer_1,
-	root_ui_layer_1_jotai,
-} from "@/app/(root)/atoms/ui_state";
-import { ROOT_UI_LAYER_1 } from "@/data/constants";
+	ChatUILayer_1,
+	chat_ui_layer_1_jotai,
+} from "@/app/(root)/data/chat-ui-state";
+import { CHAT_UI_LAYER_1 } from "@/data/constants";
 import { cn } from "@/utils/cn";
 import { useAtom } from "jotai";
 import {
@@ -15,26 +15,27 @@ import {
 } from "motion/react";
 import { ReactNode } from "react";
 
-interface Overlay extends Omit<HTMLMotionProps<"div">, "classID"> {
-	stateFlag?: Root_UI_Layer_1;
+interface Overlay<T extends string | null>
+	extends Omit<HTMLMotionProps<"div">, "classID"> {
+	stateFlag?: T;
 	children: ReactNode;
 	className?: string;
 	render?: boolean;
 }
 
-export default motion.create(function Overlay({
+export default function Overlay<T extends string | null>({
 	stateFlag,
 	children,
 	className,
 	render,
 	...props
-}: Overlay) {
-	const [root_ui_layer_1, root_ui_layer_1_setter] = useAtom(
-		root_ui_layer_1_jotai,
+}: Overlay<T>) {
+	const [chat_ui_layer_1, chat_ui_layer_1_setter] = useAtom(
+		chat_ui_layer_1_jotai,
 	);
 
 	const shouldRender =
-		stateFlag === null ? false : stateFlag === root_ui_layer_1;
+		stateFlag === null ? false : stateFlag === chat_ui_layer_1;
 
 	return (
 		<>
@@ -45,21 +46,14 @@ export default motion.create(function Overlay({
 						initial='hidden'
 						animate='visible'
 						exit={{ opacity: 0 }}
-						variants={overlayVariants}
-						className={cn(
-							"inset-0 bg-transparent backdrop-blur-sm absolute p-3 justify-center items-center",
-							className,
-						)}
+						className={cn("bg-transparent absolute p-3 ", className)}
 						id={stateFlag!}
 						onClick={(e) => {
 							e.stopPropagation();
-							const targetId = (e.target as HTMLElement).id;
-
-							if (ROOT_UI_LAYER_1.includes(targetId as Root_UI_Layer_1)) {
-								root_ui_layer_1_setter(null);
-								return;
-							}
+							if (e.currentTarget.id === (e.target as HTMLElement).id)
+								chat_ui_layer_1_setter(null);
 						}}
+						onContextMenu={(e) => e.stopPropagation()}
 					>
 						{children}
 					</motion.div>
@@ -67,18 +61,4 @@ export default motion.create(function Overlay({
 			</AnimatePresence>
 		</>
 	);
-});
-const overlayVariants: Variants = {
-	hidden: {
-		opacity: 0,
-		transition: {
-			when: "afterChildren",
-		},
-	},
-	visible: {
-		opacity: 1,
-		transition: {
-			when: "beforeChildren",
-		},
-	},
-};
+}

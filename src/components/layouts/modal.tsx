@@ -4,7 +4,7 @@ import {
 	Root_UI_Layer_1,
 	root_ui_layer_1_jotai,
 } from "@/app/(root)/atoms/ui_state";
-import { ROOT_UI_LAYER_1 } from "@/data/constants";
+import { CHAT_UI_LAYER_1 } from "@/data/constants";
 import { cn } from "@/utils/cn";
 import { useAtom } from "jotai";
 import { AnimatePresence, motion, Variants } from "motion/react";
@@ -48,7 +48,7 @@ export default motion.create(function Modal({
 						onClick={(e) => {
 							e.stopPropagation();
 							if (
-								ROOT_UI_LAYER_1.includes(
+								CHAT_UI_LAYER_1.includes(
 									(e.target as HTMLElement).id as Root_UI_Layer_1,
 								)
 							) {

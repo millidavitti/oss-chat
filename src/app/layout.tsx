@@ -16,8 +16,8 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-	title: "Noet",
-	description: "Accelerate Your Learning with Interactive Study Sets",
+	title: "OSS Chat",
+	description: "Hackathon Chat App",
 };
 
 export default function RootLayout({
