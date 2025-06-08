@@ -1,4 +1,4 @@
-import { dialog_jotai } from "@/app/(root)/atoms/ui_state";
+import { dialog_jotai } from "@/data/atoms/ui_state";
 import { jotaiStore } from "@/data/jotai-store";
 
 export function waitForDialog(resolve: (value: boolean) => void) {

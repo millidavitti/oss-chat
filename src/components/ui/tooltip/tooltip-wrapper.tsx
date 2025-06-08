@@ -2,7 +2,7 @@
 import { ReactNode } from "react";
 import Flex from "../../layouts/flex";
 import { useSetAtom } from "jotai";
-import { tooltip_visibility_jotai } from "@/app/(root)/atoms/ui_state";
+import { tooltip_visibility_jotai } from "@/data/atoms/ui_state";
 
 export default function TooltipWrapper({ children }: { children: ReactNode }) {
 	const tooltip_setter = useSetAtom(tooltip_visibility_jotai);

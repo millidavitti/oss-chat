@@ -1,6 +1,6 @@
 "use client";
 import Collision from "@/components/layouts/collision";
-import { tooltip_visibility_jotai } from "@/app/(root)/atoms/ui_state";
+import { tooltip_visibility_jotai } from "@/data/atoms/ui_state";
 import { useAtomValue } from "jotai";
 import { HTMLProps, ReactNode } from "react";
 
