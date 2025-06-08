@@ -13,6 +13,22 @@
 		scrollbar-width: none;
 	}
 
+	/* Chrome, Safari, Edge */
+	::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: transparent; /* As invisible as it gets */
+	}
+
+	::-webkit-scrollbar-thumb {
+		background-color: #888;
+		border: 2px solid transparent; /* Makes the thumb float */
+		background-clip: padding-box;
+		border-radius: 8px;
+	}
+
 	.highlight {
 		@apply rounded-[8px] bg-system-primary-container;
 	}

@@ -1,9 +1,9 @@
 "use client";
 
 import {
-	Root_UI_Layer_1,
-	root_ui_layer_1_jotai,
-} from "@/app/(root)/atoms/ui_state";
+	chat_ui_layer_1_jotai,
+	ChatUILayer_1,
+} from "@/app/(root)/data/chat-ui-state";
 import { CHAT_UI_LAYER_1 } from "@/data/constants";
 import { cn } from "@/utils/cn";
 import { useAtom } from "jotai";
@@ -11,7 +11,7 @@ import { AnimatePresence, motion, Variants } from "motion/react";
 import { ReactNode } from "react";
 
 interface Overlay {
-	stateFlag: Root_UI_Layer_1;
+	stateFlag: ChatUILayer_1;
 	children: ReactNode;
 	className?: string;
 }
@@ -22,12 +22,12 @@ export default motion.create(function Modal({
 	className,
 	...props
 }: Overlay) {
-	const [root_ui_layer_1, root_ui_layer_1_setter] = useAtom(
-		root_ui_layer_1_jotai,
+	const [chat_ui_layer_1, chat_ui_layer_1_setter] = useAtom(
+		chat_ui_layer_1_jotai,
 	);
 
 	const shouldRender =
-		stateFlag === null ? false : stateFlag === root_ui_layer_1;
+		stateFlag === null ? false : stateFlag === chat_ui_layer_1;
 
 	return (
 		<>
@@ -49,10 +49,10 @@ export default motion.create(function Modal({
 							e.stopPropagation();
 							if (
 								CHAT_UI_LAYER_1.includes(
-									(e.target as HTMLElement).id as Root_UI_Layer_1,
+									(e.target as HTMLElement).id as ChatUILayer_1,
 								)
 							) {
-								root_ui_layer_1_setter(null);
+								chat_ui_layer_1_setter(null);
 							}
 						}}
 					>
