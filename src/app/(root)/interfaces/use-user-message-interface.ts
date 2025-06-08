@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import { user_message_jotai, UserMessage } from "../data/chat-data";
 import { getErrorMessage } from "@/utils/get-error-message";

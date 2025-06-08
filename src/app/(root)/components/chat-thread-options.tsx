@@ -1,18 +1,14 @@
 "use client";
 import Flex from "@/components/layouts/flex";
 import Overlay from "@/components/layouts/overlay";
-import {
-	chat_ui_layer_1_jotai,
-	ChatUILayer_1,
-	mouse_position_jotai,
-} from "../data/chat-ui-state";
+import { ChatUILayer_1, mouse_position_jotai } from "../data/chat-ui-state";
 
-import React from "react";
 import ChatThreadOption from "./chat-thread-option";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import { scaleInVariant } from "@/utils/animation-variants";
+import { ChatThread } from "../data/chat-data";
 
-export default function ChatThreadOptions({ p }: any) {
+export default function ChatThreadOptions({ thread }: { thread: ChatThread }) {
 	const mouse_position = useAtomValue(mouse_position_jotai);
 
 	return (
@@ -34,7 +30,7 @@ export default function ChatThreadOptions({ p }: any) {
 						e.stopPropagation();
 					}}
 				>
-					Rename {p}
+					Rename {thread}
 				</ChatThreadOption>
 				<ChatThreadOption className='text-system-error' onClick={() => {}}>
 					Delete

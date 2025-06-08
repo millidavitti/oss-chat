@@ -1,18 +1,8 @@
 "use client";
-
-import {
-	ChatUILayer_1,
-	chat_ui_layer_1_jotai,
-} from "@/app/(root)/data/chat-ui-state";
-import { CHAT_UI_LAYER_1 } from "@/data/constants";
+import { chat_ui_layer_1_jotai } from "@/app/(root)/data/chat-ui-state";
 import { cn } from "@/utils/cn";
 import { useAtom } from "jotai";
-import {
-	AnimatePresence,
-	HTMLMotionProps,
-	motion,
-	Variants,
-} from "motion/react";
+import { AnimatePresence, HTMLMotionProps, motion } from "motion/react";
 import { ReactNode } from "react";
 
 interface Overlay<T extends string | null>
