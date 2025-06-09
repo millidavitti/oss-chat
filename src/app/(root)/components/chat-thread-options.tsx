@@ -1,17 +1,14 @@
 "use client";
 import Flex from "@/components/layouts/flex";
 import Overlay from "@/components/layouts/overlay";
-import { ChatUILayer_1, mouse_position_jotai } from "../data/chat-ui-state";
+import { ChatUILayer_1 } from "../data/chat-ui-state";
 
 import ChatThreadOption from "./chat-thread-option";
-import { useAtomValue } from "jotai";
 import { scaleInVariant } from "@/utils/animation-variants";
 import { ChatThread } from "../data/chat-data";
 import Collision from "@/components/layouts/collision";
 
 export default function ChatThreadOptions({ thread }: { thread: ChatThread }) {
-	const mouse_position = useAtomValue(mouse_position_jotai);
-
 	return (
 		<Overlay<ChatUILayer_1>
 			stateFlag='show-chat-thread-options'
