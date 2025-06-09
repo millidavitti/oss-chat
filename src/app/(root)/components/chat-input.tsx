@@ -1,36 +1,37 @@
 import Flex from "@/components/layouts/flex";
 import Button from "@/components/ui/button";
 import { ICON_SIZE } from "@/data/constants";
-import { computeTextAreaResize } from "@/utils/compute-text-area-resize";
 import { ArrowUp, X } from "lucide-react";
 import { AnimatePresence } from "motion/react";
+import useChatInputInterface from "../interfaces/use-chat-input-interface";
+import { resizeTextArea } from "@/utils/resize-text-area";
 
 export default function ChatInput() {
+	const { chat_input, createChat, captureChatInput, chat_ui_layer_1 } =
+		useChatInputInterface();
+
 	return (
 		<Flex className='gap-3 w-full shrink-0 rounded-[12px] bg-system-surface-container-low'>
 			<form
 				className='flex gap-3 w-full p-3 shrink-0'
 				onSubmit={(e) => {
 					e.preventDefault();
-					alert("Sent");
+					createChat();
 				}}
 			>
 				<textarea
 					placeholder='Ask anything'
+					value={chat_input}
 					className='grow w-full max-h-[200px] min-h-full outline-none resize-none overflow-y-auto bg-transparent gap-3 no-scrollbar'
 					onChange={(e) => {
-						if (e.currentTarget.value)
-							e.currentTarget.style.height =
-								e.currentTarget.scrollHeight + "px";
-						else
-							e.currentTarget.style.height =
-								computeTextAreaResize(e.currentTarget) + "px";
+						captureChatInput(e.currentTarget.value);
+						resizeTextArea(e);
 					}}
 				/>
 
 				<Flex className='relative shrink-0 w-10 h-10 self-end'>
 					<AnimatePresence>
-						{Boolean("chat-options" === "chat-options") || (
+						{Boolean(chat_ui_layer_1 === "show-chat-options") || (
 							<Button
 								type='submit'
 								initial={{ scale: 0.8 }}
@@ -48,7 +49,7 @@ export default function ChatInput() {
 						)}
 					</AnimatePresence>
 					<AnimatePresence>
-						{Boolean("chat-options" === "chat-options") && (
+						{Boolean(chat_ui_layer_1 === "show-chat-options") && (
 							<Button
 								type='button'
 								initial={{ scale: 0.8 }}

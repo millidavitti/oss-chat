@@ -9,7 +9,7 @@ import { user_jotai } from "../data/chat-data";
 
 export default function ChatThreads() {
 	const [user] = useAtom(user_jotai);
-	console.log(user);
+	console.log(user.data);
 	return (
 		<Flex
 			flex='column'

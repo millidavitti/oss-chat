@@ -1,6 +1,7 @@
 import { auth } from "@/app/auth/utils/auth";
+import { createChatController } from "@/app/chat/controllers/create-chat.controller";
 import { atom } from "jotai";
-import { atomWithQuery } from "jotai-tanstack-query";
+import { atomWithMutation, atomWithQuery } from "jotai-tanstack-query";
 
 export type UserMessage = {
 	id: string;
@@ -18,3 +19,18 @@ export const user_jotai = atomWithQuery(() => ({
 		return await auth();
 	},
 }));
+
+export const chat_input_jotai = atom("");
+
+export const create_chat_jotai = atomWithMutation(() => ({
+	mutationFn: async (chatId: string) => {
+		return await createChatController(chatId);
+	},
+}));
+
+export type Chat = {
+	id: string;
+	title: string;
+	createdAt: string;
+	updateAt: string;
+};
