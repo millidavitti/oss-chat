@@ -4,12 +4,8 @@ import NewChatButton from "./new-chat-button";
 import ChatThread from "./chat-thread";
 import Button from "@/components/ui/button";
 import Link from "next/link";
-import { useAtom } from "jotai";
-import { user_jotai } from "../data/chat-data";
 
 export default function ChatThreads() {
-	const [user] = useAtom(user_jotai);
-	console.log(user.data);
 	return (
 		<Flex
 			flex='column'

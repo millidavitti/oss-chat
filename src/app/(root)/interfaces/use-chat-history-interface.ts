@@ -11,7 +11,7 @@ export default function useChatHistoryInterface() {
 				const chatHistory = root.current as HTMLElement;
 
 				// Subtracting 2 from target.dataset.id because:
-				// 1. User messages have even-numbered indexes, so subtracting 2 aligns with even indexing.
+				// 1. User messages are rendered at even-numbered indexes (the interval is key here), so subtracting 2 aligns the calculation with the correct message element.
 				// Final calculation: Number(target.dataset.id) - 2.
 				if (isIntersecting) {
 					chatHistory?.children[

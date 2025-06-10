@@ -7,7 +7,7 @@ import useChatInputInterface from "../interfaces/use-chat-input-interface";
 import { resizeTextArea } from "@/utils/resize-text-area";
 
 export default function ChatInput() {
-	const { chat_input, createChat, captureChatInput, chat_ui_layer_1 } =
+	const { chat_input, sendChatMessage, captureChatInput, chat_ui_layer_1 } =
 		useChatInputInterface();
 
 	return (
@@ -16,7 +16,7 @@ export default function ChatInput() {
 				className='flex gap-3 w-full p-3 shrink-0'
 				onSubmit={(e) => {
 					e.preventDefault();
-					createChat();
+					sendChatMessage();
 				}}
 			>
 				<textarea
@@ -34,6 +34,7 @@ export default function ChatInput() {
 						{Boolean(chat_ui_layer_1 === "show-chat-options") || (
 							<Button
 								type='submit'
+								disabled={!Boolean(chat_input)}
 								initial={{ scale: 0.8 }}
 								animate={{ scale: 1 }}
 								exit={{ scale: 0, opacity: 0 }}

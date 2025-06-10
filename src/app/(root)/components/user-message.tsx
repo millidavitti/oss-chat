@@ -5,13 +5,13 @@ import { cn } from "@/utils/cn";
 import { Copy, CopyCheck, Edit, Expand, Shrink } from "lucide-react";
 import { ReactNode } from "react";
 import useUserMessageInterface from "../interfaces/use-user-message-interface";
-import { type UserMessage as UserMessageT } from "../data/chat-data";
+import { ChatMessage } from "../data/chat-data";
 import Button from "@/components/ui/button";
 import { HTMLMotionProps } from "motion/react";
 
 interface UserMessage extends Omit<HTMLMotionProps<"div">, "classID"> {
 	children: ReactNode;
-	message: UserMessageT;
+	message: ChatMessage;
 }
 export default function UserMessage({
 	children,
