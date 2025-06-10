@@ -7,10 +7,10 @@ import {
 	chat_ui_layer_1_jotai,
 	mouse_position_jotai,
 } from "../data/chat-ui-state";
-import { chat_thread_jotai } from "../data/chat-data";
+import { Chat, chat_thread_jotai } from "../data/chat-data";
 import { AnimatePresence } from "motion/react";
 
-export default function ChatThread({ thread }: { thread: number }) {
+export default function ChatThread({ thread }: { thread: Chat }) {
 	const mouse_position_setter = useSetAtom(mouse_position_jotai);
 	const chat_ui_layer_1_setter = useSetAtom(chat_ui_layer_1_jotai);
 	const [chat_thread, chat_thread_setter] = useAtom(chat_thread_jotai);
@@ -25,9 +25,9 @@ export default function ChatThread({ thread }: { thread: number }) {
 				chat_thread_setter(thread);
 			}}
 		>
-			<Link href='/'>
+			<Link href={`/chat/${thread.id}`}>
 				<Flex className='bg-system-surface-container-low p-3 rounded-[8px] text-system-on-surface'>
-					Chat thread {thread}
+					{thread.title}
 				</Flex>
 			</Link>
 

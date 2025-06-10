@@ -1,13 +1,12 @@
 import { auth } from "@/app/auth/utils/auth";
 import { createChatController } from "@/app/chat/controllers/create-chat.controller";
 import { getChatMessagesController } from "@/app/chat/controllers/get-chat-messages.controller";
+import { getChatsController } from "@/app/chat/controllers/get-chat-threads.controller";
 import { sendChatMessageController } from "@/app/chat/controllers/send-chat-message.controller";
-import { jotaiStore } from "@/data/jotai-store";
 import { atom } from "jotai";
 import { atomWithMutation, atomWithQuery } from "jotai-tanstack-query";
 
-export type ChatThread = number;
-export const chat_thread_jotai = atom<ChatThread | null>(null);
+export const chat_thread_jotai = atom<Chat | null>(null);
 
 export const user_jotai = atomWithQuery(() => ({
 	queryKey: [],
@@ -74,5 +73,12 @@ export const chat_history_client_jotai = atom<ChatMessage[]>([]);
 export const send_chat_message_jotai = atomWithMutation(() => ({
 	mutationFn: async (chatId: string) => {
 		return await sendChatMessageController(chatId);
+	},
+}));
+
+export const chats_jotai = atomWithQuery((get) => ({
+	queryKey: ["chats"],
+	queryFn: async () => {
+		return await getChatsController(get(user_jotai).data!.guest!.id);
 	},
 }));

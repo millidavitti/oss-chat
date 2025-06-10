@@ -4,7 +4,7 @@ import Flex from "@/components/layouts/flex";
 
 export default function Home() {
 	return (
-		<Flex className='w-full'>
+		<Flex className='w-full h-full'>
 			<ChatThreads />
 			<Chat />
 		</Flex>

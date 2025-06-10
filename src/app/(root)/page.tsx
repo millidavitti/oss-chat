@@ -4,7 +4,7 @@ import Chat from "./components/chat";
 
 export default function Home() {
 	return (
-		<Flex className='w-full'>
+		<Flex className='w-full h-full'>
 			<ChatThreads />
 			<Chat />
 		</Flex>
