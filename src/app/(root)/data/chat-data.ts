@@ -1,5 +1,6 @@
 import { auth } from "@/app/auth/utils/auth";
 import { createChatController } from "@/app/chat/controllers/create-chat.controller";
+import { deleteChatController } from "@/app/chat/controllers/delete-chat.controller";
 import { getChatMessagesController } from "@/app/chat/controllers/get-chat-messages.controller";
 import { getChatsController } from "@/app/chat/controllers/get-chat-threads.controller";
 import { sendChatMessageController } from "@/app/chat/controllers/send-chat-message.controller";
@@ -60,19 +61,25 @@ export const chat_history_jotai = atom<ChatHistory>({
 
 export const chat_history_db_jotai = atomWithQuery(() => ({
 	queryKey: ["chat-messages"],
-	queryFn: async () => {
+	queryFn: async ({}) => {
 		const [, , chatId] = location.pathname.split("/");
-
 		return await getChatMessagesController(chatId);
 	},
+
 	refetchOnWindowFocus: false,
 }));
 
 export const chat_history_client_jotai = atom<ChatMessage[]>([]);
 
 export const send_chat_message_jotai = atomWithMutation(() => ({
-	mutationFn: async (chatId: string) => {
-		return await sendChatMessageController(chatId);
+	mutationFn: async ({
+		chatId,
+		userMessage,
+	}: {
+		userMessage: string;
+		chatId: string;
+	}) => {
+		return await sendChatMessageController(chatId, userMessage);
 	},
 }));
 
@@ -80,5 +87,11 @@ export const chats_jotai = atomWithQuery((get) => ({
 	queryKey: ["chats"],
 	queryFn: async () => {
 		return await getChatsController(get(user_jotai).data!.guest!.id);
+	},
+}));
+
+export const delete_chat_jotai = atomWithMutation(() => ({
+	mutationFn: async (chatId: string) => {
+		return await deleteChatController(chatId);
 	},
 }));

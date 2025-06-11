@@ -18,4 +18,6 @@ export const ENDPOINTS = {
 			.NEXT_PUBLIC_API_ENDPOINT!}/chats/get-chat-messages/${chatId}`,
 	getChats: (userId: string) =>
 		`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/chats/get-chats/${userId}`,
+	deleteChat: (chatId: string) =>
+		`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/chats/delete-chat/${chatId}`,
 };
