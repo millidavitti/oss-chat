@@ -1,18 +1,34 @@
 "use client";
 import Flex from "@/components/layouts/flex";
 import Overlay from "@/components/layouts/overlay";
-import { ChatUILayer_1 } from "../data/chat-ui-state";
-
 import ChatThreadOption from "./chat-thread-option";
 import { scaleInVariant } from "@/utils/animation-variants";
-import { ChatThread } from "../data/chat-data";
 import Collision from "@/components/layouts/collision";
+import { Chat, delete_chat_jotai } from "../data/chat-data";
+import { useAtom } from "jotai";
+import { toast } from "sonner";
+import useDialog from "@/hooks/use-dialog";
 
-export default function ChatThreadOptions({ thread }: { thread: ChatThread }) {
+export default function ChatThreadOptions({ thread }: { thread: Chat }) {
+	const [delete_chat] = useAtom(delete_chat_jotai);
+	const { closeDialog, displayDialog, waitForDialog } = useDialog();
+
+	async function deleteChat(chatId: string) {
+		displayDialog();
+		if (await new Promise(waitForDialog))
+			await delete_chat.mutateAsync(chatId, {
+				onError() {
+					toast.error("You cannot delete your chat at the moment");
+				},
+				onSuccess() {
+					closeDialog();
+				},
+			});
+	}
 	return (
-		<Overlay<ChatUILayer_1>
+		<Overlay
 			stateFlag='show-chat-thread-options'
-			className='absolute inset-0 z-10 overflow-clip'
+			className='inset-0 z-10 overflow-clip'
 		>
 			<Collision>
 				<Flex
@@ -25,9 +41,12 @@ export default function ChatThreadOptions({ thread }: { thread: ChatThread }) {
 							e.stopPropagation();
 						}}
 					>
-						Rename {thread}
+						Rename
 					</ChatThreadOption>
-					<ChatThreadOption className='text-system-error' onClick={() => {}}>
+					<ChatThreadOption
+						className='text-system-error'
+						onClick={() => deleteChat(thread.id)}
+					>
 						Delete
 					</ChatThreadOption>
 				</Flex>

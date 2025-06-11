@@ -6,11 +6,12 @@ import useChatHistoryInterface from "../interfaces/use-chat-history-interface";
 import {
 	chat_history_client_jotai,
 	chat_history_db_jotai,
+	ChatMessage,
+	chats_jotai,
 } from "../data/chat-data";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
-import { createId } from "@paralleldrive/cuid2";
 import { HashLoader } from "react-spinners";
 import { ICON_SIZE } from "@/data/constants";
 
@@ -21,7 +22,7 @@ export default function ChatHistory() {
 	);
 	const params = useParams();
 	const [chat_history_db] = useAtom(chat_history_db_jotai);
-	console.log(chat_history_db.data);
+	const [chats] = useAtom(chats_jotai);
 
 	useEffect(() => {
 		let aiResponse: EventSource;
@@ -32,26 +33,14 @@ export default function ChatHistory() {
 				{ withCredentials: true },
 			);
 			aiResponse.onmessage = async (event) => {
-				const { chunk, chatId, status } = JSON.parse(event.data);
-				console.log(event.data);
+				const chatMessage = JSON.parse(event.data) as ChatMessage;
 
-				if (chunk !== undefined) {
-					chat_history_client_setter((history) => {
-						const ai = history.pop();
-						return [
-							...history,
-							{
-								chatId,
-								content: ai?.content + chunk,
-								id: createId(),
-								type: "ai",
-								status: "pending",
-							},
-						];
-					});
-				} else if (status === "completed") {
+				if (chatMessage.status === "pending") {
+					chat_history_client_setter([chatMessage]);
+				} else if (chatMessage.status === "completed") {
 					await chat_history_db.refetch();
 					chat_history_client_setter([]);
+					await chats.refetch();
 				}
 			};
 			aiResponse.onerror = (err) => {
@@ -72,7 +61,11 @@ export default function ChatHistory() {
 			ref={root}
 		>
 			{chat_history_db.isPending && (
-				<HashLoader size={ICON_SIZE} color='rbg(var(--primary))' />
+				<HashLoader
+					size={ICON_SIZE}
+					color='rbg(var(--primary))'
+					className='self-center'
+				/>
 			)}
 			{chat_history_db.data?.chatMessages.map((message, index) => {
 				if (message.type === "user")

@@ -9,6 +9,8 @@ import { HashLoader } from "react-spinners";
 import QueryClientProvider from "@/components/query-client-provider";
 import { HydrateAtoms } from "@/components/hydrate-atoms";
 import JotaiProvider from "@/components/jotai-provider";
+import AlertDialog from "@/components/ui/alert-dialog";
+import ChatThreads from "./(root)/components/chat-threads";
 
 const outfit = Outfit({
 	variable: "--font-outfit",
@@ -60,8 +62,10 @@ export default function RootLayout({
 					<JotaiProvider>
 						<HydrateAtoms>
 							<main className='bg-system-surface'>
-								<Flex flex='column' className='h-full'>
+								<Flex className='w-full h-full'>
+									<ChatThreads />
 									{children}
+									<AlertDialog />
 								</Flex>
 							</main>
 						</HydrateAtoms>

@@ -9,6 +9,7 @@ import {
 } from "../data/chat-ui-state";
 import { Chat, chat_thread_jotai } from "../data/chat-data";
 import { AnimatePresence } from "motion/react";
+import { fadeInVariant } from "@/utils/animation-variants";
 
 export default function ChatThread({ thread }: { thread: Chat }) {
 	const mouse_position_setter = useSetAtom(mouse_position_jotai);
@@ -18,6 +19,9 @@ export default function ChatThread({ thread }: { thread: Chat }) {
 		<Flex
 			flex='column'
 			className='overflow-visible shrink-0'
+			variants={fadeInVariant}
+			layout
+			exit={{ transform: "translateY(-48px)", opacity: 0 }}
 			onContextMenu={(e) => {
 				e.preventDefault();
 				mouse_position_setter({ x: e.clientX, y: e.clientY });

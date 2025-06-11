@@ -1,19 +1,19 @@
 "use client";
 import Flex from "../layouts/flex";
 import Button from "./button";
-import Modal from "../layouts/modal";
 import { HashLoader } from "react-spinners";
 import useAlertDialogInterface from "@/hooks/interface/use-alert-dialog-interface";
 import { ICON_SIZE } from "@/data/constants";
+import Overlay from "../layouts/overlay";
 
 export default function AlertDialog() {
 	const { cancel, proceed, dialog, dialog_message } = useAlertDialogInterface();
 
 	return (
 		<>
-			<Modal
+			<Overlay
 				stateFlag='alert-dialog'
-				className='flex justify-center items-center'
+				className='flex justify-center items-center z-50'
 			>
 				<Flex
 					flex='column'
@@ -45,7 +45,7 @@ export default function AlertDialog() {
 						</Button>
 					</Flex>
 				</Flex>
-			</Modal>
+			</Overlay>
 		</>
 	);
 }

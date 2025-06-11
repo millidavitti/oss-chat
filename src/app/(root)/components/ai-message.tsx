@@ -4,7 +4,8 @@ import { ICON_SIZE } from "@/data/constants";
 import { Copy, CopyCheck } from "lucide-react";
 import useAiMessageInterface from "../interfaces/use-ai-message-interface";
 import { ChatMessage } from "../data/chat-data";
-import { BeatLoader, HashLoader } from "react-spinners";
+import { BeatLoader } from "react-spinners";
+import Markdown from "react-markdown";
 
 export default function AiMessage({ message }: { message: ChatMessage }) {
 	const { copyMessage, hasCopiedMessage } = useAiMessageInterface();
@@ -12,9 +13,12 @@ export default function AiMessage({ message }: { message: ChatMessage }) {
 		<Flex flex='column' className='mr-auto shrink-0'>
 			{Boolean(message.content) && (
 				<>
-					<p className='body-medium lg:body-large p-3 rounded-r-[12px] rounded-tl-[12px] h-fit'>
-						{message.content}
-					</p>
+					<Flex
+						flex='column'
+						className='body-medium lg:body-large p-3 gap-3 rounded-r-[12px] rounded-tl-[12px] h-fit'
+					>
+						<Markdown>{message.content}</Markdown>
+					</Flex>
 					{/* Message Options */}
 					<Flex
 						className='gap-3 mr-auto px-3 shrink-0'
