@@ -6,6 +6,9 @@ import useAiMessageInterface from "../interfaces/use-ai-message-interface";
 import { ChatMessage } from "../data/chat-data";
 import { BeatLoader } from "react-spinners";
 import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 export default function AiMessage({ message }: { message: ChatMessage }) {
 	const { copyMessage, hasCopiedMessage } = useAiMessageInterface();
@@ -17,7 +20,29 @@ export default function AiMessage({ message }: { message: ChatMessage }) {
 						flex='column'
 						className='body-medium lg:body-large p-3 gap-3 rounded-r-[12px] rounded-tl-[12px] h-fit'
 					>
-						<Markdown>{message.content}</Markdown>
+						<Markdown
+							remarkPlugins={[remarkGfm]}
+							components={{
+								code(props) {
+									const { children, className, node, ...rest } = props;
+									const match = /language-(\w+)/.exec(className || "");
+									return match ? (
+										<SyntaxHighlighter
+											PreTag='div'
+											children={String(children).replace(/\n$/, "")}
+											language={match[1]}
+											style={dracula}
+										/>
+									) : (
+										<code {...rest} className={className}>
+											{children}
+										</code>
+									);
+								},
+							}}
+						>
+							{message.content}
+						</Markdown>
 					</Flex>
 					{/* Message Options */}
 					<Flex

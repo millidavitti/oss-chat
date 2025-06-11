@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { HashLoader } from "react-spinners";
 import { ICON_SIZE } from "@/data/constants";
+import ChatInput from "./chat-input";
 
 export default function ChatHistory() {
 	const { messageRefs, root } = useChatHistoryInterface();
@@ -56,7 +57,7 @@ export default function ChatHistory() {
 	return (
 		<Flex
 			flex='column'
-			className='grow no-scrollbar overflow-x-clip relative'
+			className='grow no-scrollbar h-full overflow-x-clip relative'
 			id='chat-history'
 			ref={root}
 		>
@@ -103,6 +104,7 @@ export default function ChatHistory() {
 					);
 				else return <AiMessageComponent key={message.id} message={message} />;
 			})}
+			<ChatInput />
 		</Flex>
 	);
 }

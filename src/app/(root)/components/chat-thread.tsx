@@ -30,7 +30,7 @@ export default function ChatThread({ thread }: { thread: Chat }) {
 			}}
 		>
 			<Link href={`/chat/${thread.id}`}>
-				<Flex className='bg-system-surface-container-low p-3 rounded-[8px] text-system-on-surface'>
+				<Flex className='bg-system-surface p-3 rounded-[8px] text-system-on-surface'>
 					{thread.title}
 				</Flex>
 			</Link>

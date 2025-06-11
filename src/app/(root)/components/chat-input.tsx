@@ -11,7 +11,7 @@ export default function ChatInput() {
 		useChatInputInterface();
 
 	return (
-		<Flex className='gap-3 w-full shrink-0 rounded-[12px] bg-system-surface-container-low'>
+		<Flex className='gap-3 w-full max-w-[720px] self-center mt-auto shrink-0 rounded-[12px] bg-system-surface-container-highest sticky bottom-0'>
 			<form
 				className='flex gap-3 w-full p-3 shrink-0'
 				onSubmit={(e) => {

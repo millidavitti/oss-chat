@@ -1,7 +1,6 @@
 "use client";
 import Flex from "@/components/layouts/flex";
 import ChatHistory from "./chat-history";
-import ChatInput from "./chat-input";
 import ChatOptions from "./chat-options";
 import InteractiveIcon from "@/components/layouts/interactive_icon";
 import { Ellipsis } from "lucide-react";
@@ -21,10 +20,7 @@ export default function Chat() {
 				</InteractiveIcon>
 			</Flex>
 			<Flex className='gap-3 relative grow overflow-clip'>
-				<Flex flex='column' className='grow gap-3 '>
-					<ChatHistory />
-					<ChatInput />
-				</Flex>
+				<ChatHistory />
 				<ChatOptions />
 			</Flex>
 			{/* <StudySetChats />
