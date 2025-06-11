@@ -54,18 +54,12 @@ export type ChatHistory = {
 	client: ChatMessage[];
 };
 
-export const chat_history_jotai = atom<ChatHistory>({
-	db: [],
-	client: [],
-});
-
 export const chat_history_db_jotai = atomWithQuery(() => ({
 	queryKey: ["chat-messages"],
 	queryFn: async ({}) => {
 		const [, , chatId] = location.pathname.split("/");
 		return await getChatMessagesController(chatId);
 	},
-
 	refetchOnWindowFocus: false,
 }));
 
@@ -88,6 +82,7 @@ export const chats_jotai = atomWithQuery((get) => ({
 	queryFn: async () => {
 		return await getChatsController(get(user_jotai).data!.guest!.id);
 	},
+	refetchOnWindowFocus: false,
 }));
 
 export const delete_chat_jotai = atomWithMutation(() => ({

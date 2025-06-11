@@ -36,6 +36,7 @@ export default function useChatInputInterface() {
 	async function sendChatMessage() {
 		console.log(path);
 		if (path === "/") return await createChat();
+		chat_input_setter("");
 		send_chat_message.mutateAsync(
 			{ userMessage: chat_input, chatId: params["chat-id"] as string },
 			{
