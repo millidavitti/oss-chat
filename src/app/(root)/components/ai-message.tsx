@@ -3,18 +3,21 @@ import InteractiveIcon from "@/components/layouts/interactive_icon";
 import { ICON_SIZE } from "@/data/constants";
 import { Copy, CopyCheck } from "lucide-react";
 import useAiMessageInterface from "../interfaces/use-ai-message-interface";
-import { ChatMessage } from "../data/chat-data";
-import { BeatLoader } from "react-spinners";
+import { chat_history_db_jotai, ChatMessage } from "../data/chat-data";
+import { BeatLoader, PulseLoader } from "react-spinners";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useAtom } from "jotai";
 
 export default function AiMessage({ message }: { message: ChatMessage }) {
 	const { copyMessage, hasCopiedMessage } = useAiMessageInterface();
+	const [chat_history_db] = useAtom(chat_history_db_jotai);
+
 	return (
 		<Flex flex='column' className='mr-auto shrink-0'>
-			{Boolean(message.content) && (
+			{chat_history_db.isFetching || (
 				<>
 					<Flex
 						flex='column'
@@ -24,15 +27,16 @@ export default function AiMessage({ message }: { message: ChatMessage }) {
 							remarkPlugins={[remarkGfm]}
 							components={{
 								code(props) {
-									const { children, className, node, ...rest } = props;
+									const { children, className, ...rest } = props;
 									const match = /language-(\w+)/.exec(className || "");
 									return match ? (
 										<SyntaxHighlighter
 											PreTag='div'
-											children={String(children).replace(/\n$/, "")}
 											language={match[1]}
 											style={dracula}
-										/>
+										>
+											{String(children).replace(/\n$/, "")}
+										</SyntaxHighlighter>
 									) : (
 										<code {...rest} className={className}>
 											{children}
@@ -59,14 +63,15 @@ export default function AiMessage({ message }: { message: ChatMessage }) {
 								<Copy
 									size={ICON_SIZE}
 									className='stroke-system-on-surface overflow-clip'
+									id='copy-ai-message'
 								/>
 							)}
 						</InteractiveIcon>
 					</Flex>
 				</>
 			)}
-			{Boolean(message.content) || (
-				<BeatLoader size={ICON_SIZE} color='rgb(var(--on-surface))' />
+			{chat_history_db.isFetching && (
+				<PulseLoader size={ICON_SIZE} color='rgb(var(--on-surface))' />
 			)}
 		</Flex>
 	);

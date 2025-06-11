@@ -10,11 +10,14 @@ import {
 import { Chat, chat_thread_jotai } from "../data/chat-data";
 import { AnimatePresence } from "motion/react";
 import { fadeInVariant } from "@/utils/animation-variants";
+import { useParams } from "next/navigation";
+import { cn } from "@/utils/cn";
 
 export default function ChatThread({ thread }: { thread: Chat }) {
 	const mouse_position_setter = useSetAtom(mouse_position_jotai);
 	const chat_ui_layer_1_setter = useSetAtom(chat_ui_layer_1_jotai);
 	const [chat_thread, chat_thread_setter] = useAtom(chat_thread_jotai);
+	const params = useParams();
 	return (
 		<Flex
 			flex='column'
@@ -30,7 +33,12 @@ export default function ChatThread({ thread }: { thread: Chat }) {
 			}}
 		>
 			<Link href={`/chat/${thread.id}`}>
-				<Flex className='bg-system-surface p-3 rounded-[8px] text-system-on-surface'>
+				<Flex
+					className={cn(
+						"bg-system-surface-container p-3 rounded-[8px] text-system-on-surface",
+						params["chat-id"] === thread.id && "bg-system-surface font-bold",
+					)}
+				>
 					{thread.title}
 				</Flex>
 			</Link>
