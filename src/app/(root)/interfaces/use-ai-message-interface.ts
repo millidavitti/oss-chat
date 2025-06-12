@@ -1,16 +1,9 @@
 import { getErrorMessage } from "@/utils/get-error-message";
-import { useAtomValue } from "jotai";
-import { useEffect, useState } from "react";
-import { chat_history_client_jotai } from "../data/chat-data";
+import { useState } from "react";
 
 export default function useAiMessageInterface() {
 	const [hasCopiedMessage, setHasCopiedMessage] = useState(false);
-	const chat_history_client = useAtomValue(chat_history_client_jotai);
-	useEffect(() => {
-		document
-			.querySelector("#scroll-into-view")
-			?.scrollIntoView({ behavior: "smooth" });
-	}, [chat_history_client[0]?.content]);
+
 	async function copyMessage(content: string) {
 		try {
 			const permission = (

@@ -5,6 +5,7 @@ import { getChatMessagesController } from "@/app/chat/controllers/get-chat-messa
 import { getChatsController } from "@/app/chat/controllers/get-chat-threads.controller";
 import { renameChatController } from "@/app/chat/controllers/rename-chat.controller";
 import { sendChatMessageController } from "@/app/chat/controllers/send-chat-message.controller";
+import { jotaiStore } from "@/data/jotai-store";
 import { atom } from "jotai";
 import { atomWithMutation, atomWithQuery } from "jotai-tanstack-query";
 
@@ -20,12 +21,12 @@ export const chat_input_jotai = atom("");
 export const create_chat_jotai = atomWithMutation(() => ({
 	mutationFn: async ({
 		chatId,
-		userMessage,
+		prompt,
 	}: {
 		chatId: string;
-		userMessage: string;
+		prompt: string;
 	}) => {
-		return await createChatController(chatId, userMessage);
+		return await createChatController(chatId, prompt);
 	},
 }));
 
@@ -58,7 +59,9 @@ export const chat_history_db_jotai = atomWithQuery(() => ({
 	queryFn: async ({}) => {
 		const [, , chatId] = location.pathname.split("/");
 		const chatMessages = await getChatMessagesController(chatId);
-		if (chatMessages) return chatMessages;
+		if (chatMessages) {
+			return chatMessages;
+		}
 		return { chatMessages: [] };
 	},
 	refetchOnWindowFocus: false,
@@ -69,12 +72,12 @@ export const chat_history_client_jotai = atom<ChatMessage[]>([]);
 export const send_chat_message_jotai = atomWithMutation(() => ({
 	mutationFn: async ({
 		chatId,
-		userMessage,
+		prompt,
 	}: {
-		userMessage: string;
+		prompt: string;
 		chatId: string;
 	}) => {
-		return await sendChatMessageController(chatId, userMessage);
+		return await sendChatMessageController(chatId, prompt);
 	},
 }));
 
@@ -82,7 +85,15 @@ export const chats_jotai = atomWithQuery((get) => ({
 	queryKey: ["chats"],
 	queryFn: async () => {
 		const chats = await getChatsController(get(user_jotai).data!.guest!.id);
-		if (chats) return chats;
+		if (chats) {
+			const [, , chatId] = location.pathname.split("/");
+
+			jotaiStore.set(
+				chat_jotai,
+				chats.chats.find((chat) => chat.id === chatId)!,
+			);
+			return chats;
+		}
 		return { chats: [] };
 	},
 	refetchOnWindowFocus: false,

@@ -1,8 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
+	chat_history_client_jotai,
 	chat_input_jotai,
 	create_chat_jotai,
 	send_chat_message_jotai,
@@ -17,14 +18,17 @@ export default function useChatInputInterface() {
 	const router = useRouter();
 	const path = usePathname();
 	const params = useParams();
+	const chat_history_client_setter = useSetAtom(chat_history_client_jotai);
 
 	async function createChat() {
 		const chatId = createId();
 		router.push(`/chat/${chatId}`);
 		chat_input_setter("");
-
+		chat_history_client_setter([
+			{ chatId, content: chat_input, id: createId(), type: "user" },
+		]);
 		return await create_chat.mutateAsync(
-			{ chatId, userMessage: chat_input },
+			{ chatId, prompt: chat_input },
 			{
 				onError() {
 					toast.error("Your message was not sent");
@@ -34,11 +38,14 @@ export default function useChatInputInterface() {
 	}
 
 	async function sendChatMessage() {
-		console.log(path);
 		if (path === "/") return await createChat();
+		const chatId = params["chat-id"] as string;
 		chat_input_setter("");
+		chat_history_client_setter([
+			{ chatId, content: chat_input, id: createId(), type: "user" },
+		]);
 		send_chat_message.mutateAsync(
-			{ userMessage: chat_input, chatId: params["chat-id"] as string },
+			{ prompt: chat_input, chatId },
 			{
 				onError() {
 					toast.error("Your message was not sent");
