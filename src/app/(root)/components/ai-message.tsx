@@ -4,7 +4,7 @@ import { ICON_SIZE } from "@/data/constants";
 import { Copy, CopyCheck } from "lucide-react";
 import useAiMessageInterface from "../interfaces/use-ai-message-interface";
 import { chat_history_db_jotai, ChatMessage } from "../data/chat-data";
-import { BeatLoader, PulseLoader } from "react-spinners";
+import { PulseLoader } from "react-spinners";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";

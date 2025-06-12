@@ -1,11 +1,10 @@
 import Button from "@/components/ui/button";
-import { useAtom, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import Link from "next/link";
-import React from "react";
-import { chat_thread_jotai } from "../data/chat-data";
+import { chat_jotai } from "../data/chat-data";
 
 export default function NewChatButton() {
-	const chat_thread_setter = useSetAtom(chat_thread_jotai);
+	const chat_thread_setter = useSetAtom(chat_jotai);
 
 	return (
 		<Link

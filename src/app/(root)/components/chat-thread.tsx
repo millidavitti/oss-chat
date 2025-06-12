@@ -2,22 +2,26 @@
 import Flex from "@/components/layouts/flex";
 import Link from "next/link";
 import ChatThreadOptions from "./chat-thread-options";
-import { useAtom, useSetAtom } from "jotai";
-import {
-	chat_ui_layer_1_jotai,
-	mouse_position_jotai,
-} from "../data/chat-ui-state";
-import { Chat, chat_thread_jotai } from "../data/chat-data";
+import { Chat } from "../data/chat-data";
 import { AnimatePresence } from "motion/react";
 import { fadeInVariant } from "@/utils/animation-variants";
-import { useParams } from "next/navigation";
 import { cn } from "@/utils/cn";
+import Input from "@/components/ui/input";
+import useChatThreadInterface from "../interfaces/use-chat-thread-interface";
 
 export default function ChatThread({ thread }: { thread: Chat }) {
-	const mouse_position_setter = useSetAtom(mouse_position_jotai);
-	const chat_ui_layer_1_setter = useSetAtom(chat_ui_layer_1_jotai);
-	const [chat_thread, chat_thread_setter] = useAtom(chat_thread_jotai);
-	const params = useParams();
+	const {
+		displayChatOptions,
+		renameChat,
+		saveChatRename,
+		chat,
+		chatId,
+		chat_ui_layer_1,
+		viewChat,
+		inputRef,
+		cancelChatRename,
+	} = useChatThreadInterface();
+
 	return (
 		<Flex
 			flex='column'
@@ -27,26 +31,42 @@ export default function ChatThread({ thread }: { thread: Chat }) {
 			exit={{ transform: "translateY(-48px)", opacity: 0 }}
 			onContextMenu={(e) => {
 				e.preventDefault();
-				mouse_position_setter({ x: e.clientX, y: e.clientY });
-				chat_ui_layer_1_setter("show-chat-thread-options");
-				chat_thread_setter(thread);
+				displayChatOptions(e.clientX, e.clientY, thread);
 			}}
 		>
-			<Link
-				href={`/chat/${thread.id}`}
-				onClick={() => chat_thread_setter(thread)}
-			>
-				<Flex
-					className={cn(
-						"bg-system-surface-container p-3 rounded-[8px] text-system-on-surface",
-						params["chat-id"] === thread.id && "bg-system-surface font-bold",
-					)}
+			{!(chat_ui_layer_1 === "rename-chat" && chat?.id === thread.id) && (
+				<Link href={`/chat/${thread.id}`} onClick={() => viewChat(thread)}>
+					<Flex
+						className={cn(
+							"bg-system-surface-container p-3 rounded-[8px] text-system-on-surface",
+							chatId === thread.id && "bg-system-surface font-bold",
+						)}
+					>
+						{thread.title}
+					</Flex>{" "}
+				</Link>
+			)}
+			{chat_ui_layer_1 === "rename-chat" && chat?.id === thread.id && (
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						saveChatRename(thread.id);
+					}}
+					className='w-full'
+					onKeyDown={(e) => {
+						if (e.key === "Escape") cancelChatRename();
+					}}
 				>
-					{thread.title}
-				</Flex>
-			</Link>
+					<Input
+						ref={inputRef}
+						className='w-full'
+						defaultValue={thread.title}
+						onChange={(e) => renameChat(e.currentTarget.value)}
+					/>
+				</form>
+			)}
 
-			{chat_thread === thread && (
+			{chat === thread && (
 				<AnimatePresence>
 					<ChatThreadOptions thread={thread} />
 				</AnimatePresence>
