@@ -7,16 +7,16 @@ import useChatInputInterface from "../interfaces/use-chat-input-interface";
 import { resizeTextArea } from "@/utils/resize-text-area";
 
 export default function ChatInput() {
-	const { chat_input, createChat, captureChatInput, chat_ui_layer_1 } =
+	const { chat_input, sendChatMessage, captureChatInput, chat_ui_layer_1 } =
 		useChatInputInterface();
 
 	return (
-		<Flex className='gap-3 w-full shrink-0 rounded-[12px] bg-system-surface-container-low'>
+		<Flex className='gap-3 w-full max-w-[720px] self-center mt-auto shrink-0 rounded-t-[12px] bg-system-surface-container-highest sticky bottom-0'>
 			<form
 				className='flex gap-3 w-full p-3 shrink-0'
 				onSubmit={(e) => {
 					e.preventDefault();
-					createChat();
+					sendChatMessage();
 				}}
 			>
 				<textarea
@@ -27,6 +27,12 @@ export default function ChatInput() {
 						captureChatInput(e.currentTarget.value);
 						resizeTextArea(e);
 					}}
+					onKeyDown={(e) => {
+						if (e.key === "Enter" && !e.shiftKey && chat_input) {
+							e.preventDefault();
+							sendChatMessage();
+						}
+					}}
 				/>
 
 				<Flex className='relative shrink-0 w-10 h-10 self-end'>
@@ -34,6 +40,7 @@ export default function ChatInput() {
 						{Boolean(chat_ui_layer_1 === "show-chat-options") || (
 							<Button
 								type='submit'
+								disabled={!Boolean(chat_input)}
 								initial={{ scale: 0.8 }}
 								animate={{ scale: 1 }}
 								exit={{ scale: 0, opacity: 0 }}

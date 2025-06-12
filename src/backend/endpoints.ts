@@ -8,6 +8,18 @@ export const ENDPOINTS = {
 		`${process.env.NEXT_PUBLIC_BACKEND_AUTH_ENDPOINT}/csrf-token`,
 	updateUser: (userId: string) =>
 		`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/users/${userId}`,
-	createChat: () =>
-		`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/chats/create-chat`,
+	createChat: (chatId: string) =>
+		`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/chats/create-chat/${chatId}`,
+	sendChatMessage: (chatId: string) =>
+		`${process.env
+			.NEXT_PUBLIC_API_ENDPOINT!}/chats/send-chat-message/${chatId}`,
+	getChatMessages: (chatId: string) =>
+		`${process.env
+			.NEXT_PUBLIC_API_ENDPOINT!}/chats/get-chat-messages/${chatId}`,
+	getChats: (userId: string) =>
+		`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/chats/get-chats/${userId}`,
+	deleteChat: (chatId: string) =>
+		`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/chats/delete-chat/${chatId}`,
+	renameChat: (chatId: string) =>
+		`${process.env.NEXT_PUBLIC_API_ENDPOINT!}/chats/rename-chat/${chatId}`,
 };

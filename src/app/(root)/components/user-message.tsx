@@ -5,13 +5,13 @@ import { cn } from "@/utils/cn";
 import { Copy, CopyCheck, Edit, Expand, Shrink } from "lucide-react";
 import { ReactNode } from "react";
 import useUserMessageInterface from "../interfaces/use-user-message-interface";
-import { type UserMessage as UserMessageT } from "../data/chat-data";
+import { ChatMessage } from "../data/chat-data";
 import Button from "@/components/ui/button";
 import { HTMLMotionProps } from "motion/react";
 
 interface UserMessage extends Omit<HTMLMotionProps<"div">, "classID"> {
 	children: ReactNode;
-	message: UserMessageT;
+	message: ChatMessage;
 }
 export default function UserMessage({
 	children,
@@ -45,7 +45,7 @@ export default function UserMessage({
 				flex='column'
 				id={"user-message-" + message.id}
 				className={cn(
-					"body-medium md:body-large gap-3 p-3 rounded-l-[12px] rounded-tr-[12px] bg-system-tertiary-container text-system-on-tertiary-container min-w-[280px] max-w-full max-h-[320px] no-scrollbar",
+					"body-medium md:body-large gap-3 p-3 rounded-l-[12px] rounded-tr-[12px] bg-system-tertiary-container text-system-on-tertiary-container max-w-full max-h-[320px] no-scrollbar outline",
 				)}
 			>
 				<p

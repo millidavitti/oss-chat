@@ -23,6 +23,7 @@ export async function auth(request?: NextRequest) {
 
 type auth = {
 	user?: User;
+	guest?: { id: string };
 	error?: string;
 	isAuthenticated: boolean;
 };

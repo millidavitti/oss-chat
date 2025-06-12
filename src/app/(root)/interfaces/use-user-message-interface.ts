@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
-import { user_message_jotai, UserMessage } from "../data/chat-data";
+import { ChatMessage, user_message_jotai } from "../data/chat-data";
 import { getErrorMessage } from "@/utils/get-error-message";
 
 export default function useUserMessageInterface() {
@@ -48,7 +48,7 @@ export default function useUserMessageInterface() {
 		}
 	}
 
-	function editMessage(message: UserMessage) {
+	function editMessage(message: ChatMessage) {
 		requestAnimationFrame(() => {
 			paragraphRef.current?.focus();
 		});

@@ -1,49 +1,64 @@
 "use client";
-import { chat_ui_layer_1_jotai } from "@/app/(root)/data/chat-ui-state";
+import {
+	chat_ui_layer_1_jotai,
+	chat_ui_layer_2_jotai,
+	ChatUILayer_1,
+	ChatUILayer_2,
+} from "@/app/(root)/data/chat-ui-state";
+import { CHAT_UI_LAYER_1, CHAT_UI_LAYER_2 } from "@/data/constants";
+import { listVariant } from "@/utils/animation-variants";
 import { cn } from "@/utils/cn";
 import { useAtom } from "jotai";
-import { AnimatePresence, HTMLMotionProps, motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { ReactNode } from "react";
 
-interface Overlay<T extends string | null>
-	extends Omit<HTMLMotionProps<"div">, "classID"> {
-	stateFlag?: T;
+interface Overlay {
+	stateFlag: ChatUILayer_1 | ChatUILayer_2;
 	children: ReactNode;
 	className?: string;
-	render?: boolean;
 }
 
-export default function Overlay<T extends string | null>({
-	stateFlag,
-	children,
-	className,
-	render,
-	...props
-}: Overlay<T>) {
+export default function Overlay({ stateFlag, children, className }: Overlay) {
 	const [chat_ui_layer_1, chat_ui_layer_1_setter] = useAtom(
 		chat_ui_layer_1_jotai,
 	);
+	const [chat_ui_layer_2, chat_ui_layer_2_setter] = useAtom(
+		chat_ui_layer_2_jotai,
+	);
 
 	const shouldRender =
-		stateFlag === null ? false : stateFlag === chat_ui_layer_1;
+		stateFlag === null
+			? false
+			: stateFlag === chat_ui_layer_2 || stateFlag === chat_ui_layer_1;
 
 	return (
 		<>
 			<AnimatePresence>
-				{(render || shouldRender) && (
+				{shouldRender && (
 					<motion.div
-						{...props}
 						initial='hidden'
 						animate='visible'
 						exit={{ opacity: 0 }}
-						className={cn("bg-transparent absolute p-3 ", className)}
+						variants={listVariant}
+						className={cn(
+							"inset-0 bg-transparent backdrop-blur-sm absolute p-3 justify-center items-center",
+							className,
+						)}
 						id={stateFlag!}
 						onClick={(e) => {
 							e.stopPropagation();
-							if (e.currentTarget.id === (e.target as HTMLElement).id)
+							const targetId = (e.target as HTMLElement).id;
+
+							if (CHAT_UI_LAYER_1.includes(targetId as ChatUILayer_1)) {
 								chat_ui_layer_1_setter(null);
+								return;
+							}
+
+							if (CHAT_UI_LAYER_2.includes(targetId as ChatUILayer_2)) {
+								chat_ui_layer_2_setter(null);
+								return;
+							}
 						}}
-						onContextMenu={(e) => e.stopPropagation()}
 					>
 						{children}
 					</motion.div>

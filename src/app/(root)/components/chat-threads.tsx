@@ -5,25 +5,42 @@ import ChatThread from "./chat-thread";
 import Button from "@/components/ui/button";
 import Link from "next/link";
 import { useAtom } from "jotai";
-import { user_jotai } from "../data/chat-data";
+import { chats_jotai } from "../data/chat-data";
+import { HashLoader } from "react-spinners";
+import { ICON_SIZE } from "@/data/constants";
+import { listVariant } from "@/utils/animation-variants";
+import { AnimatePresence } from "motion/react";
 
 export default function ChatThreads() {
-	const [user] = useAtom(user_jotai);
-	console.log(user.data);
+	const [chats] = useAtom(chats_jotai);
 	return (
 		<Flex
 			flex='column'
-			className='min-w-[320px] p-3 gap-3 bg-system-surface-container'
+			className='w-[480px] p-3 gap-3 bg-system-surface justify-between'
 		>
 			<NewChatButton />
-			<Flex flex='column' className='rounded-[8px] gap-3 py-3'>
-				{threads.map((d) => (
-					<ChatThread key={d} thread={d} />
-				))}{" "}
-				{threads.map((d) => (
-					<ChatThread key={d} thread={d} />
-				))}
-			</Flex>
+			{chats.isLoading && (
+				<HashLoader
+					size={ICON_SIZE}
+					color='rgb(var(--on-surface))'
+					className='self-center mb-auto'
+				/>
+			)}
+			{Boolean(chats.data?.chats.length) && (
+				<Flex
+					flex='column'
+					className='rounded-[8px] gap-3 py-3 h-full'
+					variants={listVariant}
+					initial='hidden'
+					animate='visible'
+				>
+					<AnimatePresence>
+						{chats.data?.chats.map((chat) => (
+							<ChatThread key={chat.id} thread={chat} />
+						))}
+					</AnimatePresence>
+				</Flex>
+			)}
 			<Flex className='shrink-0'>
 				<Link href='/'>
 					<Button>Sign In</Button>
@@ -33,5 +50,3 @@ export default function ChatThreads() {
 		</Flex>
 	);
 }
-
-const threads = [1, 2, 3, 4, 5, 6, 7, 8, 9];

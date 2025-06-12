@@ -3,6 +3,7 @@ import { useState } from "react";
 
 export default function useAiMessageInterface() {
 	const [hasCopiedMessage, setHasCopiedMessage] = useState(false);
+
 	async function copyMessage(content: string) {
 		try {
 			const permission = (
