@@ -6,6 +6,7 @@ import {
 	chat_history_db_jotai,
 	chats_jotai,
 	ChatMessage,
+	Chat,
 } from "../data/chat-data";
 
 export default function useChatHistoryInterface() {
@@ -63,11 +64,14 @@ export default function useChatHistoryInterface() {
 				{ withCredentials: true },
 			);
 			aiResponse.onmessage = async (event) => {
-				const chatMessage = JSON.parse(event.data) as ChatMessage;
+				const { chatMessage } = JSON.parse(event.data) as {
+					chatMessage?: ChatMessage;
+					chat?: Chat;
+				};
 
-				if (chatMessage.status === "pending") {
+				if (chatMessage?.status === "pending") {
 					chat_history_client_setter([chatMessage]);
-				} else if (chatMessage.status === "completed") {
+				} else if (chatMessage?.status === "completed") {
 					await chat_history_db.refetch();
 					chat_history_client_setter([]);
 					await chats.refetch();
