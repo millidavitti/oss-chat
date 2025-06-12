@@ -32,7 +32,10 @@ export default function ChatThread({ thread }: { thread: Chat }) {
 				chat_thread_setter(thread);
 			}}
 		>
-			<Link href={`/chat/${thread.id}`}>
+			<Link
+				href={`/chat/${thread.id}`}
+				onClick={() => chat_thread_setter(thread)}
+			>
 				<Flex
 					className={cn(
 						"bg-system-surface-container p-3 rounded-[8px] text-system-on-surface",

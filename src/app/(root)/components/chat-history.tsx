@@ -62,6 +62,7 @@ export default function ChatHistory() {
 				else return <AiMessageComponent key={message.id} message={message} />;
 			})}
 			<ChatInput />
+			<div id='scroll-into-view'></div>
 		</Flex>
 	);
 }

@@ -7,8 +7,6 @@ import { sendChatMessageController } from "@/app/chat/controllers/send-chat-mess
 import { atom } from "jotai";
 import { atomWithMutation, atomWithQuery } from "jotai-tanstack-query";
 
-export const chat_thread_jotai = atom<Chat | null>(null);
-
 export const user_jotai = atomWithQuery(() => ({
 	queryKey: [],
 	queryFn: async () => {
@@ -84,6 +82,7 @@ export const chats_jotai = atomWithQuery((get) => ({
 	},
 	refetchOnWindowFocus: false,
 }));
+export const chat_thread_jotai = atom<Chat | null>(null);
 
 export const delete_chat_jotai = atomWithMutation(() => ({
 	mutationFn: async (chatId: string) => {

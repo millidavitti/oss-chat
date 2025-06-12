@@ -8,7 +8,7 @@ export default function useAiMessageInterface() {
 	const chat_history_client = useAtomValue(chat_history_client_jotai);
 	useEffect(() => {
 		document
-			.querySelector("#copy-ai-message")
+			.querySelector("#scroll-into-view")
 			?.scrollIntoView({ behavior: "smooth" });
 	}, [chat_history_client[0]?.content]);
 	async function copyMessage(content: string) {
