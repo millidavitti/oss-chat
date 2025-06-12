@@ -16,7 +16,7 @@ export default function ChatThreads() {
 	return (
 		<Flex
 			flex='column'
-			className='min-w-[320px] p-3 gap-3 bg-system-surface justify-between'
+			className='w-[480px] p-3 gap-3 bg-system-surface justify-between'
 		>
 			<NewChatButton />
 			{chats.isLoading && (

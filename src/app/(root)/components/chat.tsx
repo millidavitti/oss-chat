@@ -4,17 +4,18 @@ import ChatHistory from "./chat-history";
 import ChatOptions from "./chat-options";
 import InteractiveIcon from "@/components/layouts/interactive_icon";
 import { Ellipsis } from "lucide-react";
+import { useAtomValue } from "jotai";
+import { chat_jotai } from "../data/chat-data";
 
 export default function Chat() {
-	const some = "chat";
+	const chat = useAtomValue(chat_jotai);
 	return (
 		<Flex
 			flex='column'
-			className='w-full p-3 text-system-on-surface overflow-clip data-[chat=false]:hidden md:data-[chat=false]:flex relative '
-			data-chat={some === "chat"}
+			className='w-full p-3 text-system-on-surface overflow-clip'
 		>
 			<Flex className='shrink-0 items-center justify-between'>
-				<h3 className='title-large'>Benefits of LINQ</h3>
+				<h3 className='title-large'>{chat?.title}</h3>
 				<InteractiveIcon>
 					<Ellipsis />
 				</InteractiveIcon>

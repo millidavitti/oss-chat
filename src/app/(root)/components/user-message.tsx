@@ -45,7 +45,7 @@ export default function UserMessage({
 				flex='column'
 				id={"user-message-" + message.id}
 				className={cn(
-					"body-medium md:body-large gap-3 p-3 rounded-l-[12px] rounded-tr-[12px] bg-system-tertiary-container text-system-on-tertiary-container min-w-[280px] max-w-full max-h-[320px] no-scrollbar",
+					"body-medium md:body-large gap-3 p-3 rounded-l-[12px] rounded-tr-[12px] bg-system-tertiary-container text-system-on-tertiary-container max-w-full max-h-[320px] no-scrollbar outline",
 				)}
 			>
 				<p

@@ -27,6 +27,12 @@ export default function ChatInput() {
 						captureChatInput(e.currentTarget.value);
 						resizeTextArea(e);
 					}}
+					onKeyDown={(e) => {
+						if (e.key === "Enter" && !e.shiftKey && chat_input) {
+							e.preventDefault();
+							sendChatMessage();
+						}
+					}}
 				/>
 
 				<Flex className='relative shrink-0 w-10 h-10 self-end'>

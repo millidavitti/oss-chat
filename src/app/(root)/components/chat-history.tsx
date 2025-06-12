@@ -25,24 +25,25 @@ export default function ChatHistory() {
 					className='self-center'
 				/>
 			)}
-			{chat_history_db.data?.chatMessages.map((message, index) => {
-				if (message.type === "user")
-					return (
-						<UserMessageComponent
-							key={message.id}
-							message={message}
-							ref={(node) => {
-								if (node) {
-									node.dataset.index = index.toString();
-									messageRefs.current.push(node!);
-								}
-							}}
-						>
-							{message.content}
-						</UserMessageComponent>
-					);
-				else return <AiMessageComponent key={message.id} message={message} />;
-			})}
+			{chat_history_db.isFetching ||
+				chat_history_db.data?.chatMessages.map((message, index) => {
+					if (message.type === "user")
+						return (
+							<UserMessageComponent
+								key={message.id}
+								message={message}
+								ref={(node) => {
+									if (node) {
+										node.dataset.index = index.toString();
+										messageRefs.current.push(node!);
+									}
+								}}
+							>
+								{message.content}
+							</UserMessageComponent>
+						);
+					else return <AiMessageComponent key={message.id} message={message} />;
+				})}
 			{chat_history_client.map((message, index) => {
 				if (message.type === "user")
 					return (
