@@ -6,7 +6,7 @@ import { generateErrorLog } from "@/utils/generate-error-log";
 
 export async function sendChatMessageController(
 	chatId: string,
-	userMessage: string,
+	prompt: string,
 ) {
 	try {
 		const { token } = (await getCsrfToken())!;
@@ -14,7 +14,7 @@ export async function sendChatMessageController(
 			method: "post",
 			credentials: "include",
 			headers: { "x-csrf-token": token, "Content-Type": "application/json" },
-			body: JSON.stringify({ userMessage }),
+			body: JSON.stringify({ prompt }),
 		});
 
 		const { error, data } = (await res.json()) as ApiResponse;
