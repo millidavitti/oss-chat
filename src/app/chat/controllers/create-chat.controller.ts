@@ -1,17 +1,21 @@
-import { ChatMessage } from "@/app/(root)/data/chat-data";
+import { ChatMessage, Model } from "@/app/(root)/data/chat-data";
 import { getCsrfToken } from "@/backend/auth/get-csrf-token.controller";
 import { ENDPOINTS } from "@/backend/endpoints";
 import { ApiResponse } from "@/data/types/global";
 import { generateErrorLog } from "@/utils/generate-error-log";
 
-export async function createChatController(chatId: string, prompt: string) {
+export async function createChatController(
+	chatId: string,
+	prompt: string,
+	model: Model,
+) {
 	try {
 		const { token } = (await getCsrfToken())!;
 		const res = await fetch(ENDPOINTS.createChat(chatId), {
 			method: "post",
 			credentials: "include",
 			headers: { "x-csrf-token": token, "Content-Type": "application/json" },
-			body: JSON.stringify({ prompt }),
+			body: JSON.stringify({ prompt, model }),
 		});
 
 		const { error, data } = (await res.json()) as ApiResponse;
