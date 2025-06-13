@@ -14,7 +14,7 @@ export default function ChatHistory() {
 	return (
 		<Flex
 			flex='column'
-			className='grow no-scrollbar h-full overflow-x-clip relative outline'
+			className='grow h-full overflow-x-clip relative'
 			id='chat-history'
 			ref={root}
 		>

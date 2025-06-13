@@ -1,38 +1,64 @@
 import Flex from "@/components/layouts/flex";
-import Overlay from "@/components/layouts/overlay";
-import { useAtom, useSetAtom } from "jotai";
 import {
-	chat_ui_layer_1_jotai,
-	mouse_position_jotai,
-} from "../data/chat-ui-state";
-import Collision from "@/components/layouts/collision";
+	DropdownMenu,
+	DropdownMenuTrigger,
+	DropdownMenuContent,
+	DropdownMenuLabel,
+	DropdownMenuItem,
+} from "@radix-ui/react-dropdown-menu";
+import { useAtom } from "jotai";
+import { selected_model_jotai, SeletedModel } from "../data/chat-data";
+import { Box } from "lucide-react";
+import { ICON_SIZE, models } from "@/data/constants";
+import { cn } from "@/utils/cn";
 
 export default function SelectModel() {
-	const chat_ui_layer_1_setter = useSetAtom(chat_ui_layer_1_jotai);
-	const [mouse_position, mouse_position_setter] = useAtom(mouse_position_jotai);
-
+	const [[selected_model, formated_model_name], selected_model_setter] =
+		useAtom(selected_model_jotai);
 	return (
-		<Flex className='shrink-0'>
-			<Flex
-				className='p-3 bg-system-surface-container-low text-system-on-surface rounded-[8px] w-full cursor-pointer'
-				onClick={() => {
-					// mouse_position_setter({ x: e.clientX, y: e.clientY });
-					chat_ui_layer_1_setter("select-model");
-				}}
-				onTouchStart={(e) => {
-					const touch = e.touches[0];
-					mouse_position_setter({ x: touch.clientX, y: touch.clientY });
-				}}
-			>
-				gpt-4.1-mini
+		<>
+			<Flex className='shrink-0'>
+				<DropdownMenu>
+					<DropdownMenuTrigger className='flex gap-3 self-center p-3text-system-on-surface rounded-[8px] w-full cursor-pointer outline-none active:scale-95 transition-transform label-large'>
+						{formated_model_name}
+						<Box size={ICON_SIZE} className='stroke-system-on-surface' />
+					</DropdownMenuTrigger>
+					<DropdownMenuContent className='flex flex-wrap max-w-[480px] grow w-full max-h-[480px] p-3 rounded-[12px] bg-system-surface-container gap-3 -translate-y-4 translate-x-3'>
+						<Flex flex='column' className='gap-3'>
+							<DropdownMenuLabel className='rounded-[12px] font-semibold'>
+								OpenAI
+							</DropdownMenuLabel>
+							<Flex flex='column' className='h-[320px]'>
+								{Object.entries(models).map(([model, formatedModelName]) => (
+									<DropdownMenuItem
+										key={model}
+										className={cn(
+											"outline-none shrink-0 p-3 hover:font-medium cursor-pointer rounded-[8px]",
+											selected_model === model && "bg-system-surface",
+										)}
+										onClick={() => {
+											selected_model_setter([
+												model,
+												formatedModelName,
+											] as SeletedModel);
+										}}
+									>
+										{formatedModelName}
+									</DropdownMenuItem>
+								))}
+							</Flex>
+						</Flex>
+						<Flex flex='column' className='gap-3'>
+							<DropdownMenuLabel className='rounded-[12px] font-semibold'>
+								Gemini
+							</DropdownMenuLabel>
+							<DropdownMenuItem className='outline-none p-3 hover:bg-system-surface cursor-pointer rounded-[8px]'>
+								Gemini 2.5 Flash
+							</DropdownMenuItem>
+						</Flex>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</Flex>
-			<Overlay stateFlag='select-model' className='fixed'>
-				<Collision className='inset-0 max-w-[480px] w-full h-[480px] outline p-3 rounded-[12px]'>
-					<Flex className='max-w-[480px] w-full h-[480px] outline p-3 rounded-[12px]'>
-						<Flex className='w-[160px] h-[160px] outline rounded-[12px]'></Flex>
-					</Flex>
-				</Collision>
-			</Overlay>
-		</Flex>
+		</>
 	);
 }

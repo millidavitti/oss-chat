@@ -15,6 +15,7 @@ export default function ChatInput() {
 		captureChatInput,
 		chat_ui_layer_1,
 		is_scroll_bottom,
+		toggleChatMenu,
 	} = useChatInputInterface();
 
 	return (
@@ -69,6 +70,10 @@ export default function ChatInput() {
 								transition={{ type: "tween", duration: 0.2 }}
 								className='w-10 h-10 shrink-0 p-0 rounded-[12px] bg-system-primary lg:w-10 lg:h-10 inset-0 absolute'
 								onClick={() => sendChatMessage()}
+								onContextMenu={(e) => {
+									e.preventDefault();
+									toggleChatMenu();
+								}}
 							>
 								<ArrowUp
 									size={ICON_SIZE}
@@ -86,7 +91,9 @@ export default function ChatInput() {
 								exit={{ scale: 0, opacity: 0 }}
 								transition={{ type: "tween", duration: 0.2 }}
 								className='w-10 h-10 shrink-0 p-0 rounded-[12px] bg-system-error lg:w-10 lg:h-10 inset-0 absolute'
-								onClick={() => {}}
+								onClick={() => {
+									toggleChatMenu();
+								}}
 							>
 								<X size={ICON_SIZE} className='stroke-system-on-error' />
 							</Button>
