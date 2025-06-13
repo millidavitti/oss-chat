@@ -49,20 +49,19 @@ export default function useChatHistoryInterface() {
 					chat?: Chat;
 					userMessage: ChatMessage;
 				};
-
 				if (aiMessage?.status === "pending") {
-					chat_history_client_setter([userMessage, aiMessage]);
+					chat_history_client_setter((messages) => [
+						...messages.slice(0, -2),
+						userMessage,
+						aiMessage,
+					]);
 				} else if (aiMessage?.status === "completed") {
-					if (chat_history_db.data?.chatMessages.length)
-						queryClient.setQueryData(
-							["chat-messages"],
-							({ chatMessages }: { chatMessages: ChatMessage[] }) => {
-								return {
-									chatMessages: [...chatMessages, userMessage, aiMessage],
-								};
-							},
-						);
-					chat_history_client_setter([]);
+					chat_history_client_setter((messages) => [
+						...messages.slice(0, -2),
+						userMessage,
+						aiMessage,
+					]);
+
 					await chats.refetch();
 				}
 
@@ -110,7 +109,6 @@ export default function useChatHistoryInterface() {
 				rootMargin: "0px 0px -85% 0px",
 			},
 		);
-		console.log(messageRefs);
 
 		for (const ref of messageRefs.current) {
 			if (ref) observer.observe(ref);
@@ -135,12 +133,13 @@ export default function useChatHistoryInterface() {
 			700,
 			{ leading: true },
 		);
-		root.current?.addEventListener("scroll", deboucedCb);
+		const messages = root.current;
+		messages?.addEventListener("scroll", deboucedCb);
 		return () => {
 			aiResponse?.close();
 			observer.disconnect();
-			root.current?.removeEventListener("scroll", deboucedCb);
+			messages?.removeEventListener("scroll", deboucedCb);
 		};
-	}, [params["chat-id"]]);
+	}, [chat_history_db.data?.chatMessages]);
 	return { root, messageRefs, chat_history_db, chat_history_client };
 }

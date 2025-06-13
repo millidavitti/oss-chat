@@ -5,9 +5,11 @@ import { getChatMessagesController } from "@/app/chat/controllers/get-chat-messa
 import { getChatsController } from "@/app/chat/controllers/get-chat-threads.controller";
 import { renameChatController } from "@/app/chat/controllers/rename-chat.controller";
 import { sendChatMessageController } from "@/app/chat/controllers/send-chat-message.controller";
+import { models } from "@/data/constants";
 import { jotaiStore } from "@/data/jotai-store";
 import { atom } from "jotai";
 import { atomWithMutation, atomWithQuery } from "jotai-tanstack-query";
+import { atomWithStorage } from "jotai/utils";
 
 export const user_jotai = atomWithQuery(() => ({
 	queryKey: [],
@@ -22,11 +24,13 @@ export const create_chat_jotai = atomWithMutation(() => ({
 	mutationFn: async ({
 		chatId,
 		prompt,
+		model,
 	}: {
 		chatId: string;
 		prompt: string;
+		model: keyof typeof models;
 	}) => {
-		return await createChatController(chatId, prompt);
+		return await createChatController(chatId, prompt, model);
 	},
 }));
 
@@ -73,11 +77,13 @@ export const send_chat_message_jotai = atomWithMutation(() => ({
 	mutationFn: async ({
 		chatId,
 		prompt,
+		model,
 	}: {
 		prompt: string;
 		chatId: string;
+		model: Model;
 	}) => {
-		return await sendChatMessageController(chatId, prompt);
+		return await sendChatMessageController(chatId, prompt, model);
 	},
 }));
 
@@ -110,3 +116,10 @@ export const rename_chat_jotai = atomWithMutation(() => ({
 		return await renameChatController(chatId, title);
 	},
 }));
+
+export type SeletedModel = [keyof typeof models, string];
+export type Model = keyof typeof models;
+export const selected_model_jotai = atomWithStorage<SeletedModel>(
+	"selected_model",
+	["gpt-4.1-mini", "GPT 4.1 Mini"],
+);

@@ -16,7 +16,7 @@ export default function useUserMessageInterface() {
 			const lineHeight = +getComputedStyle(p).lineHeight.replace("px", "");
 			const scrollHeightBeforeClamping = lineHeight * 3;
 			const isOverflowing = p.scrollHeight > scrollHeightBeforeClamping;
-
+			paragraphRef.current.scrollIntoView({ behavior: "smooth" });
 			setIsOverflowing(isOverflowing);
 		}
 	}, [user_message]);
