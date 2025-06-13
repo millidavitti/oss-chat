@@ -5,7 +5,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuLabel,
 	DropdownMenuItem,
-} from "@radix-ui/react-dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { useAtom } from "jotai";
 import { selected_model_jotai, SeletedModel } from "../data/chat-data";
 import { Box } from "lucide-react";
@@ -19,11 +19,11 @@ export default function SelectModel() {
 		<>
 			<Flex className='shrink-0'>
 				<DropdownMenu>
-					<DropdownMenuTrigger className='flex gap-3 self-center p-3text-system-on-surface rounded-[8px] w-full cursor-pointer outline-none active:scale-95 transition-transform label-large'>
+					<DropdownMenuTrigger className='flex gap-3 self-center p-3 rounded-[8px] w-full cursor-pointer outline-none active:scale-95 transition-transform label-large'>
 						{formated_model_name}
 						<Box size={ICON_SIZE} className='stroke-system-on-surface' />
 					</DropdownMenuTrigger>
-					<DropdownMenuContent className='flex flex-wrap max-w-[480px] grow w-full max-h-[480px] p-3 rounded-[12px] bg-system-surface-container gap-3 -translate-y-4 translate-x-3'>
+					<DropdownMenuContent className='text-system-on-surface  flex flex-wrap max-w-[480px] grow w-full max-h-[480px] p-3 rounded-[12px] bg-system-surface-container gap-3 -translate-y-4 translate-x-3'>
 						<Flex flex='column' className='gap-3'>
 							<DropdownMenuLabel className='rounded-[12px] font-semibold'>
 								OpenAI
