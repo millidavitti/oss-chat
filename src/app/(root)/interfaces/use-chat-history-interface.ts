@@ -10,6 +10,9 @@ import {
 	chat_jotai,
 } from "../data/chat-data";
 import { queryClient } from "@/data/query-client";
+import { toast } from "sonner";
+import debounce from "lodash.debounce";
+import { is_scroll_bottom_jotai } from "../data/chat-ui-state";
 
 export default function useChatHistoryInterface() {
 	const messageRefs = useRef<HTMLDivElement[]>([]);
@@ -22,6 +25,7 @@ export default function useChatHistoryInterface() {
 	const [chat_history_db] = useAtom(chat_history_db_jotai);
 	const [chats] = useAtom(chats_jotai);
 	const chat_setter = useSetAtom(chat_jotai);
+	const is_scroll_bottom_setter = useSetAtom(is_scroll_bottom_jotai);
 
 	useEffect(() => {
 		document
@@ -49,14 +53,15 @@ export default function useChatHistoryInterface() {
 				if (aiMessage?.status === "pending") {
 					chat_history_client_setter([userMessage, aiMessage]);
 				} else if (aiMessage?.status === "completed") {
-					queryClient.setQueryData(
-						["chat-messages"],
-						({ chatMessages }: { chatMessages: ChatMessage[] }) => {
-							return {
-								chatMessages: [...chatMessages, userMessage, aiMessage],
-							};
-						},
-					);
+					if (chat_history_db.data?.chatMessages.length)
+						queryClient.setQueryData(
+							["chat-messages"],
+							({ chatMessages }: { chatMessages: ChatMessage[] }) => {
+								return {
+									chatMessages: [...chatMessages, userMessage, aiMessage],
+								};
+							},
+						);
 					chat_history_client_setter([]);
 					await chats.refetch();
 				}
@@ -78,6 +83,7 @@ export default function useChatHistoryInterface() {
 			};
 			aiResponse.onerror = (err) => {
 				console.error("EventSource failed:", err);
+				toast.error("I'm not in the mood to chat right now 😒");
 			};
 		})();
 
@@ -86,12 +92,10 @@ export default function useChatHistoryInterface() {
 			([entry]) => {
 				const { target, isIntersecting } = entry;
 				const chatHistory = root.current as HTMLElement;
-				console.log(isIntersecting, target);
 				// Subtracting 2 from target.dataset.id because:
 				// 1. User messages are rendered at even-numbered indexes (the interval is key here), so subtracting 2 aligns the calculation with the correct message element.
 				// Final calculation: Number(target.dataset.id) - 2.
 				if (isIntersecting) {
-					console.log(chatHistory.children);
 					chatHistory?.children[
 						Number((target as HTMLElement).dataset.index) - 2
 					]?.classList.add("opacity-0", "translate-x-[16px]");
@@ -109,13 +113,33 @@ export default function useChatHistoryInterface() {
 		console.log(messageRefs);
 
 		for (const ref of messageRefs.current) {
-			console.log(ref);
 			if (ref) observer.observe(ref);
 		}
 
+		// Toggle Scroll to Bottom Button
+
+		const scrollToBottomAnchor = document.querySelector(
+			"#scroll-into-view",
+		) as HTMLDivElement;
+		const deboucedCb = debounce(
+			() => {
+				const { bottom: rootBottom } = root.current!.getBoundingClientRect();
+				const { bottom: anchorBottom } =
+					scrollToBottomAnchor.getBoundingClientRect();
+				const isScrollBottom =
+					rootBottom === anchorBottom &&
+					(anchorBottom / rootBottom) * 100 < 120;
+
+				is_scroll_bottom_setter(isScrollBottom);
+			},
+			700,
+			{ leading: true },
+		);
+		root.current?.addEventListener("scroll", deboucedCb);
 		return () => {
 			aiResponse?.close();
 			observer.disconnect();
+			root.current?.removeEventListener("scroll", deboucedCb);
 		};
 	}, [params["chat-id"]]);
 	return { root, messageRefs, chat_history_db, chat_history_client };

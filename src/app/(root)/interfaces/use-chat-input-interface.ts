@@ -8,7 +8,10 @@ import {
 	create_chat_jotai,
 	send_chat_message_jotai,
 } from "../data/chat-data";
-import { chat_ui_layer_1_jotai } from "../data/chat-ui-state";
+import {
+	chat_ui_layer_1_jotai,
+	is_scroll_bottom_jotai,
+} from "../data/chat-ui-state";
 
 export default function useChatInputInterface() {
 	const [chat_input, chat_input_setter] = useAtom(chat_input_jotai);
@@ -19,6 +22,7 @@ export default function useChatInputInterface() {
 	const path = usePathname();
 	const params = useParams();
 	const chat_history_client_setter = useSetAtom(chat_history_client_jotai);
+	const is_scroll_bottom = useAtomValue(is_scroll_bottom_jotai);
 
 	async function createChat() {
 		const chatId = createId();
@@ -57,5 +61,11 @@ export default function useChatInputInterface() {
 	function captureChatInput(value: string) {
 		chat_input_setter(value);
 	}
-	return { chat_input, sendChatMessage, captureChatInput, chat_ui_layer_1 };
+	return {
+		chat_input,
+		sendChatMessage,
+		captureChatInput,
+		chat_ui_layer_1,
+		is_scroll_bottom,
+	};
 }
