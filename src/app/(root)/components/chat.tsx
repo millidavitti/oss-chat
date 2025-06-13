@@ -6,6 +6,7 @@ import InteractiveIcon from "@/components/layouts/interactive_icon";
 import { Ellipsis } from "lucide-react";
 import { useAtomValue } from "jotai";
 import { chat_jotai } from "../data/chat-data";
+import MobileChats from "./mobile-chats";
 
 export default function Chat() {
 	const chat = useAtomValue(chat_jotai);
@@ -24,9 +25,9 @@ export default function Chat() {
 				<ChatHistory />
 				<ChatOptions />
 			</Flex>
-			{/* <StudySetChats />
-			<StudySetDocuments />
-			<UploadDocuments /> */}
+			<MobileChats />
+			{/* <StudySetDocuments /> */}
+			{/* <UploadDocuments /> */}
 		</Flex>
 	);
 }

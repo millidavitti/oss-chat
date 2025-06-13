@@ -1,10 +1,14 @@
 import Flex from "@/components/layouts/flex";
 import InteractiveIcon from "@/components/layouts/interactive_icon";
 import { ICON_SIZE } from "@/data/constants";
+import { useSetAtom } from "jotai";
 import { Files, MessageSquare, Plus } from "lucide-react";
 import { AnimatePresence, Variants } from "motion/react";
+import { chat_ui_layer_1_jotai } from "../data/chat-ui-state";
+import Link from "next/link";
 
 export default function ChatOptions() {
+	const chat_ui_layer_1_jotai_setter = useSetAtom(chat_ui_layer_1_jotai);
 	return (
 		<>
 			<AnimatePresence>
@@ -20,10 +24,17 @@ export default function ChatOptions() {
 						variants={listVariant}
 						className='p-3 gap-3 absolute right-3 rounded-[8px] justify-center items-center self-center backdrop-blur-md overflow-x-clip'
 					>
-						<InteractiveIcon variants={listItemVariant}>
-							<Plus size={ICON_SIZE} className='stroke-system-on-surface' />
-						</InteractiveIcon>
-						<InteractiveIcon variants={listItemVariant} onClick={() => {}}>
+						<Link href='/'>
+							<InteractiveIcon variants={listItemVariant}>
+								<Plus size={ICON_SIZE} className='stroke-system-on-surface' />
+							</InteractiveIcon>
+						</Link>
+						<InteractiveIcon
+							variants={listItemVariant}
+							onClick={() => {
+								chat_ui_layer_1_jotai_setter("show-mobile-chats");
+							}}
+						>
 							<MessageSquare
 								size={ICON_SIZE}
 								className='stroke-system-on-surface'

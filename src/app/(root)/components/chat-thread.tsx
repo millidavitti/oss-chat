@@ -28,7 +28,6 @@ export default function ChatThread({ thread }: { thread: Chat }) {
 			className='overflow-visible shrink-0'
 			variants={fadeInVariant}
 			layout
-			exit={{ transform: "translateY(-48px)", opacity: 0 }}
 			onContextMenu={(e) => {
 				e.preventDefault();
 				displayChatOptions(e.clientX, e.clientY, thread);
@@ -38,8 +37,8 @@ export default function ChatThread({ thread }: { thread: Chat }) {
 				<Link href={`/chat/${thread.id}`} onClick={() => viewChat(thread)}>
 					<Flex
 						className={cn(
-							"bg-system-surface-container p-3 rounded-[8px] text-system-on-surface",
-							chatId === thread.id && "bg-system-surface font-bold",
+							"bg-system-surface-container p-3 rounded-[8px] hover:font-medium",
+							chatId === thread.id && "bg-system-surface font-medium",
 						)}
 					>
 						{thread.title}

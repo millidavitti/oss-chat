@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import Flex from "@/components/layouts/flex";
 import Overlay from "@/components/layouts/overlay";
 import ChatThreadOption from "./chat-thread-option";
@@ -39,7 +39,7 @@ export default function ChatThreadOptions({ thread }: { thread: Chat }) {
 			<Collision>
 				<Flex
 					flex='column'
-					className='group text-system-on-surface gap-3 rounded-[12px] p-3 w-[160px] bg-system-surface-container'
+					className='group text-system-on-surface gap-3 rounded-[12px] p-3 w-[160px] bg-system-surface'
 					variants={scaleInVariant}
 				>
 					<ChatThreadOption

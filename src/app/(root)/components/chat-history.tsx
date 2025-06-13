@@ -60,7 +60,8 @@ export default function ChatHistory() {
 							{message.content}
 						</UserMessageComponent>
 					);
-				else return <AiMessageComponent key={message.id} message={message} />;
+				else if (message.type === "ai")
+					return <AiMessageComponent key={message.id} message={message} />;
 			})}
 			<ChatInput />
 			<div id='scroll-into-view'></div>
