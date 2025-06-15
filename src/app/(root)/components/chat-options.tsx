@@ -28,7 +28,7 @@ export default function ChatOptions() {
 							transform: "translateX(24px)",
 						}}
 						variants={listVariant}
-						className='p-3 gap-3 absolute right-3 rounded-[8px] justify-center items-center self-center backdrop-blur-md overflow-x-clip bg-system-surface '
+						className='p-3 gap-3 absolute right-3 rounded-[8px] justify-center items-center self-center backdrop-blur-md overflow-x-clip bg-system-surface-container'
 					>
 						<Link
 							href='/'

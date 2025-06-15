@@ -23,7 +23,7 @@ export default function SelectModel() {
 						{formated_model_name}
 						<Box size={ICON_SIZE} className='stroke-system-on-surface' />
 					</DropdownMenuTrigger>
-					<DropdownMenuContent className='text-system-on-surface  flex flex-wrap max-w-[480px] grow w-full max-h-[480px] p-3 rounded-[12px] bg-system-surface-container gap-3 -translate-y-4 translate-x-3'>
+					<DropdownMenuContent className='text-system-on-surface flex flex-wrap max-w-[480px] grow w-full max-h-[480px] p-3 rounded-[12px] bg-system-surface-container gap-3 translate-x-12'>
 						<Flex flex='column' className='gap-3'>
 							<DropdownMenuLabel className='rounded-[12px] font-semibold'>
 								OpenAI

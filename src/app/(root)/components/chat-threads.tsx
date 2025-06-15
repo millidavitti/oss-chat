@@ -5,7 +5,7 @@ import ChatThread from "./chat-thread";
 import Button from "@/components/ui/button";
 import Link from "next/link";
 import { useAtom } from "jotai";
-import { chats_jotai } from "../data/chat-data";
+import { chats_jotai, user_jotai } from "../data/chat-data";
 import { HashLoader } from "react-spinners";
 import { ICON_SIZE } from "@/data/constants";
 import { listVariant } from "@/utils/animation-variants";
@@ -13,10 +13,11 @@ import { AnimatePresence } from "motion/react";
 
 export default function ChatThreads() {
 	const [chats] = useAtom(chats_jotai);
+	const [user] = useAtom(user_jotai);
 	return (
 		<Flex
 			flex='column'
-			className='w-[480px] p-3 gap-3 bg-system-surface-container text-system-on-surface justify-between md:flex hidden'
+			className='w-[400px] p-3 gap-3 bg-system-surface-container text-system-on-surface justify-between md:flex hidden shrink-0'
 		>
 			<NewChatButton />
 			{chats.isLoading && (
@@ -42,9 +43,15 @@ export default function ChatThreads() {
 				</Flex>
 			)}
 			<Flex className='shrink-0'>
-				<Link href='/'>
-					<Button>Sign In</Button>
-				</Link>
+				{user.data?.isAuthenticated ? (
+					<Link href='/auth/sign-out'>
+						<Button>Sign Out</Button>
+					</Link>
+				) : (
+					<Link href='/auth/sign-in'>
+						<Button>Sign In</Button>
+					</Link>
+				)}
 				{/* <UserAccount /> */}
 			</Flex>
 		</Flex>
