@@ -20,6 +20,6 @@ export async function GET(req: NextRequest) {
 		generateErrorLog("sign-out-controller", error, "silent");
 		return new Response(null);
 	} finally {
-		redirect("/auth");
+		redirect("/");
 	}
 }

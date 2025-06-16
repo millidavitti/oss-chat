@@ -3,9 +3,9 @@ import { ENDPOINTS } from "@/backend/endpoints";
 import { ApiResponse } from "@/data/types/global";
 import { generateErrorLog } from "@/utils/generate-error-log";
 
-export async function getChatsController(chatId: string) {
+export async function getChatsController(userId: string) {
 	try {
-		const res = await fetch(ENDPOINTS.getChats(chatId), {
+		const res = await fetch(ENDPOINTS.getChats(userId), {
 			method: "get",
 			credentials: "include",
 		});

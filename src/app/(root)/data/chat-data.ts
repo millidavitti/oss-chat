@@ -90,7 +90,10 @@ export const send_chat_message_jotai = atomWithMutation(() => ({
 export const chats_jotai = atomWithQuery((get) => ({
 	queryKey: ["chats"],
 	queryFn: async () => {
-		const chats = await getChatsController(get(user_jotai).data!.guest!.id);
+		console.log(get(user_jotai).data);
+		const chats = await getChatsController(
+			(get(user_jotai).data!.user?.id || get(user_jotai).data!.guest?.id)!,
+		);
 		if (chats) {
 			const [, , chatId] = location.pathname.split("/");
 

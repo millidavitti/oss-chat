@@ -21,8 +21,10 @@ export async function GET(req: NextRequest) {
 			status: 302,
 			headers: {
 				...Object.fromEntries(res.headers.entries()),
-				Location: `${process.env.ORIGIN}/auth${
-					status === "account-creation-successful" ? `/study-sets` : "/sign-up"
+				Location:
+					status === "account-creation-successful"
+						? `${process.env.ORIGIN}`
+						: `${process.env.ORIGIN}/auth/sign-up"
 				}?status=${status}`,
 			},
 		});

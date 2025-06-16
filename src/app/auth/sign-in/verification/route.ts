@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
 					status: 302,
 					headers: {
 						...Object.fromEntries(res.headers.entries()),
-						Location: `${process.env.ORIGIN}/study-sets`,
+						Location: `${process.env.ORIGIN}`,
 					},
 			  })
 			: new Response(null, {
