@@ -68,9 +68,6 @@ export default function AiMessage({ message }: { message: ChatMessage }) {
 					</Flex>
 				</>
 			)}
-			{Boolean(message.content) || (
-				<BeatLoader size={ICON_SIZE} color='rgb(var(--on-surface))' />
-			)}
 		</Flex>
 	);
 }

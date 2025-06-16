@@ -10,10 +10,16 @@ import { HashLoader } from "react-spinners";
 import { ICON_SIZE } from "@/data/constants";
 import { listVariant } from "@/utils/animation-variants";
 import { AnimatePresence } from "motion/react";
+import { useEffect } from "react";
+import { useParams } from "next/navigation";
 
 export default function ChatThreads() {
 	const [chats] = useAtom(chats_jotai);
 	const [user] = useAtom(user_jotai);
+	const params = useParams();
+
+	// const
+	useEffect(() => {}, [params["chat-id"]]);
 	return (
 		<Flex
 			flex='column'
@@ -52,7 +58,6 @@ export default function ChatThreads() {
 						<Button>Sign In</Button>
 					</Link>
 				)}
-				{/* <UserAccount /> */}
 			</Flex>
 		</Flex>
 	);
