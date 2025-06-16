@@ -49,10 +49,12 @@ export default function useChatInputInterface() {
 		if (path === "/") return await createChat();
 		const chatId = params["chat-id"] as string;
 		chat_input_setter("");
-		chat_history_client_setter((messages) => [
-			...messages,
-			{ chatId, content: chat_input, id: createId(), type: "user" },
-		]);
+		chat_history_client_setter((messages) => {
+			return [
+				...messages,
+				{ chatId, content: chat_input, id: createId(), type: "user" },
+			];
+		});
 		send_chat_message.mutateAsync(
 			{ prompt: chat_input, chatId, model: selected_model },
 			{

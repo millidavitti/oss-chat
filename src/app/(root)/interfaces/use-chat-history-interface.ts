@@ -49,6 +49,7 @@ export default function useChatHistoryInterface() {
 					chat?: Chat;
 					userMessage: ChatMessage;
 				};
+
 				if (aiMessage?.status === "pending") {
 					chat_history_client_setter((messages) => [
 						...messages.slice(0, -2),
@@ -56,12 +57,15 @@ export default function useChatHistoryInterface() {
 						aiMessage,
 					]);
 				} else if (aiMessage?.status === "completed") {
-					chat_history_client_setter((messages) => [
-						...messages.slice(0, -2),
-						userMessage,
-						aiMessage,
-					]);
-
+					queryClient.setQueryData(
+						["chat-messages"],
+						({ chatMessages }: { chatMessages: ChatMessage[] }) => {
+							return {
+								chatMessages: [...chatMessages, userMessage, aiMessage],
+							};
+						},
+					);
+					chat_history_client_setter([]);
 					await chats.refetch();
 				}
 
@@ -77,7 +81,6 @@ export default function useChatHistoryInterface() {
 							};
 						},
 					);
-					chat_setter(chat);
 				}
 			};
 			aiResponse.onerror = (err) => {
@@ -94,6 +97,7 @@ export default function useChatHistoryInterface() {
 				// Subtracting 2 from target.dataset.id because:
 				// 1. User messages are rendered at even-numbered indexes (the interval is key here), so subtracting 2 aligns the calculation with the correct message element.
 				// Final calculation: Number(target.dataset.id) - 2.
+
 				if (isIntersecting) {
 					chatHistory?.children[
 						Number((target as HTMLElement).dataset.index) - 2
@@ -140,6 +144,6 @@ export default function useChatHistoryInterface() {
 			observer.disconnect();
 			messages?.removeEventListener("scroll", deboucedCb);
 		};
-	}, [chat_history_db.data?.chatMessages]);
+	}, [chat_history_db.data?.chatMessages.length]);
 	return { root, messageRefs, chat_history_db, chat_history_client };
 }

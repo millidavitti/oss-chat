@@ -90,7 +90,6 @@ export const send_chat_message_jotai = atomWithMutation(() => ({
 export const chats_jotai = atomWithQuery((get) => ({
 	queryKey: ["chats"],
 	queryFn: async () => {
-		console.log(get(user_jotai).data);
 		const chats = await getChatsController(
 			(get(user_jotai).data!.user?.id || get(user_jotai).data!.guest?.id)!,
 		);
