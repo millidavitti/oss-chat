@@ -37,7 +37,7 @@ export default function ChatThread({ thread }: { thread: Chat }) {
 				<Link href={`/chat/${thread.id}`} onClick={() => viewChat(thread)}>
 					<Flex
 						className={cn(
-							"bg-system-surface-container p-3 rounded-[8px] hover:font-medium body-medium",
+							"bg-system-surface-container p-3 rounded-[8px] hover:font-medium body-medium md:body-large",
 							chatId === thread.id && "bg-system-surface font-medium",
 						)}
 					>

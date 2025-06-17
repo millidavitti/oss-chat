@@ -31,7 +31,6 @@ export default function AiMessage({ message }: { message: ChatMessage }) {
 											PreTag='div'
 											language={match[1]}
 											style={dracula}
-											wrapLongLines
 										>
 											{String(children).replace(/\n$/, "")}
 										</SyntaxHighlighter>

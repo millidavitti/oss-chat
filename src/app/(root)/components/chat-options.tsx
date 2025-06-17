@@ -2,7 +2,7 @@ import Flex from "@/components/layouts/flex";
 import InteractiveIcon from "@/components/layouts/interactive_icon";
 import { ICON_SIZE } from "@/data/constants";
 import { useAtom, useSetAtom } from "jotai";
-import { Files, MessageSquare, Plus } from "lucide-react";
+import { MessageSquare, Plus } from "lucide-react";
 import { AnimatePresence, Variants } from "motion/react";
 import { chat_ui_layer_1_jotai } from "../data/chat-ui-state";
 import Link from "next/link";
@@ -52,9 +52,6 @@ export default function ChatOptions() {
 								size={ICON_SIZE}
 								className='stroke-system-on-surface'
 							/>
-						</InteractiveIcon>
-						<InteractiveIcon variants={listItemVariant} onClick={() => {}}>
-							<Files size={ICON_SIZE} className='stroke-system-on-surface' />
 						</InteractiveIcon>
 					</Flex>
 				)}

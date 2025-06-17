@@ -37,11 +37,9 @@ export default function ChatHistory() {
 							<UserMessageComponent
 								key={message.id}
 								message={message}
+								index={index}
 								ref={(node) => {
-									if (node) {
-										node.dataset.index = index.toString();
-										messageRefs.current.push(node!);
-									}
+									if (node) messageRefs.current.push(node!);
 								}}
 							>
 								{message.content}
@@ -55,11 +53,9 @@ export default function ChatHistory() {
 						<UserMessageComponent
 							key={message.id}
 							message={message}
+							index={index}
 							ref={(node) => {
-								if (node) {
-									node.dataset.index = index.toString();
-									messageRefs.current.push(node!);
-								}
+								if (node) messageRefs.current.push(node!);
 							}}
 						>
 							{message.content}
@@ -75,8 +71,8 @@ export default function ChatHistory() {
 					color='rgb(var(--on-surface))'
 				/>
 			)}
-			<ChatInput />
 			<div id='scroll-into-view'></div>
+			<ChatInput />
 		</Flex>
 	);
 }

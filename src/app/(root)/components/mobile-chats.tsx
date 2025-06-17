@@ -15,7 +15,7 @@ import ChatThread from "./chat-thread";
 import Link from "next/link";
 
 export default function MobileChats() {
-	const chat_ui_layer_1_jotai_setter = useSetAtom(chat_ui_layer_1_jotai);
+	const chat_ui_layer_1_setter = useSetAtom(chat_ui_layer_1_jotai);
 	const [chats] = useAtom(chats_jotai);
 	const chat_setter = useSetAtom(chat_jotai);
 	const chat_history_client_setter = useSetAtom(chat_history_client_jotai);
@@ -39,14 +39,14 @@ export default function MobileChats() {
 							onClick={() => {
 								chat_setter(null);
 								chat_history_client_setter([]);
-								chat_ui_layer_1_jotai_setter(null);
+								chat_ui_layer_1_setter(null);
 							}}
 						>
 							<InteractiveIcon>
 								<Plus size={ICON_SIZE} className='stroke-system-primary' />
 							</InteractiveIcon>
 						</Link>
-						<InteractiveIcon onClick={() => chat_ui_layer_1_jotai_setter(null)}>
+						<InteractiveIcon onClick={() => chat_ui_layer_1_setter(null)}>
 							<X size={ICON_SIZE} className='stroke-system-error' />
 						</InteractiveIcon>
 					</Flex>

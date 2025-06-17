@@ -4,22 +4,19 @@ import NewChatButton from "./new-chat-button";
 import ChatThread from "./chat-thread";
 import Button from "@/components/ui/button";
 import Link from "next/link";
-import { useAtom } from "jotai";
-import { chats_jotai, user_jotai } from "../data/chat-data";
+import { useAtom, useSetAtom } from "jotai";
+import { chat_jotai, chats_jotai, user_jotai } from "../data/chat-data";
 import { HashLoader } from "react-spinners";
 import { ICON_SIZE } from "@/data/constants";
 import { listVariant } from "@/utils/animation-variants";
 import { AnimatePresence } from "motion/react";
-import { useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function ChatThreads() {
 	const [chats] = useAtom(chats_jotai);
 	const [user] = useAtom(user_jotai);
-	const params = useParams();
-
-	// const
-	useEffect(() => {}, [params["chat-id"]]);
+	const chat_setter = useSetAtom(chat_jotai);
+	const queryClient = useQueryClient();
 	return (
 		<Flex
 			flex='column'
@@ -50,7 +47,14 @@ export default function ChatThreads() {
 			)}
 			<Flex className='shrink-0'>
 				{user.data?.isAuthenticated ? (
-					<Link href='/auth/sign-out'>
+					<Link
+						href='/auth/sign-out'
+						onClick={() => {
+							chat_setter(null);
+							queryClient.setQueryData(["user"], null);
+							queryClient.setQueryData(["chats"], []);
+						}}
+					>
 						<Button>Sign Out</Button>
 					</Link>
 				) : (
