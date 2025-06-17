@@ -12,7 +12,7 @@ import { atomWithMutation, atomWithQuery } from "jotai-tanstack-query";
 import { atomWithStorage } from "jotai/utils";
 
 export const user_jotai = atomWithQuery(() => ({
-	queryKey: [],
+	queryKey: ["user"],
 	queryFn: async () => {
 		return await auth();
 	},

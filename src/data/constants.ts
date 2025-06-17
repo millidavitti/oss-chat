@@ -4,6 +4,7 @@ export const CHAT_UI_LAYER_1 = [
 	"show-chat-options",
 	"rename-chat",
 	"show-mobile-chats",
+	"send-chat-message",
 	null,
 ] as const;
 export const CHAT_UI_LAYER_2 = ["alert-dialog", null] as const;
