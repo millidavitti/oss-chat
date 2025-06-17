@@ -2,12 +2,12 @@ import { useAtom, useSetAtom } from "jotai";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import {
-	chat_history_client_jotai,
-	chat_history_db_jotai,
-	chats_jotai,
-	ChatMessage,
-	Chat,
-	chat_jotai,
+    chat_history_client_jotai,
+    chat_history_db_jotai,
+    chats_jotai,
+    ChatMessage,
+    Chat,
+    is_waiting_for_ai_jotai,
 } from "../data/chat-data";
 import { queryClient } from "@/data/query-client";
 import { toast } from "sonner";
@@ -16,7 +16,6 @@ import { is_scroll_bottom_jotai } from "../data/chat-ui-state";
 
 export default function useChatHistoryInterface() {
 	const messageRefs = useRef<HTMLDivElement[]>([]);
-
 	const root = useRef<HTMLDivElement>(null);
 	const [chat_history_client, chat_history_client_setter] = useAtom(
 		chat_history_client_jotai,
@@ -24,8 +23,10 @@ export default function useChatHistoryInterface() {
 	const params = useParams();
 	const [chat_history_db] = useAtom(chat_history_db_jotai);
 	const [chats] = useAtom(chats_jotai);
-	const chat_setter = useSetAtom(chat_jotai);
 	const is_scroll_bottom_setter = useSetAtom(is_scroll_bottom_jotai);
+	const [is_waiting_for_ai, is_waiting_for_ai_setter] = useAtom(
+		is_waiting_for_ai_jotai,
+	);
 
 	useEffect(() => {
 		document
@@ -36,7 +37,6 @@ export default function useChatHistoryInterface() {
 	useEffect(() => {
 		let aiResponse: EventSource;
 
-		if (chat_history_client.length > 1) chat_history_client_setter([]);
 		// SSE
 		(async () => {
 			aiResponse = new EventSource(
@@ -51,21 +51,19 @@ export default function useChatHistoryInterface() {
 				};
 
 				if (aiMessage?.status === "pending") {
+					is_waiting_for_ai_setter(false);
 					chat_history_client_setter((messages) => [
 						...messages.slice(0, -2),
 						userMessage,
 						aiMessage,
 					]);
 				} else if (aiMessage?.status === "completed") {
-					queryClient.setQueryData(
-						["chat-messages"],
-						({ chatMessages }: { chatMessages: ChatMessage[] }) => {
-							return {
-								chatMessages: [...chatMessages, userMessage, aiMessage],
-							};
-						},
-					);
-					chat_history_client_setter([]);
+					is_waiting_for_ai_setter(false);
+					chat_history_client_setter((messages) => [
+						...messages.slice(0, -2),
+						userMessage,
+						aiMessage,
+					]);
 					await chats.refetch();
 				}
 
@@ -84,6 +82,7 @@ export default function useChatHistoryInterface() {
 				}
 			};
 			aiResponse.onerror = (err) => {
+				is_waiting_for_ai_setter(false);
 				console.error("EventSource failed:", err);
 				toast.error("I'm not in the mood to chat right now 😒");
 			};
@@ -145,5 +144,11 @@ export default function useChatHistoryInterface() {
 			messages?.removeEventListener("scroll", deboucedCb);
 		};
 	}, [chat_history_db.data?.chatMessages.length]);
-	return { root, messageRefs, chat_history_db, chat_history_client };
+	return {
+		root,
+		messageRefs,
+		chat_history_db,
+		chat_history_client,
+		is_waiting_for_ai,
+	};
 }

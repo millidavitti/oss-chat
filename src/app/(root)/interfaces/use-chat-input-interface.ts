@@ -6,6 +6,7 @@ import {
 	chat_history_client_jotai,
 	chat_input_jotai,
 	create_chat_jotai,
+	is_waiting_for_ai_jotai,
 	selected_model_jotai,
 	send_chat_message_jotai,
 } from "../data/chat-data";
@@ -26,15 +27,19 @@ export default function useChatInputInterface() {
 	const is_scroll_bottom = useAtomValue(is_scroll_bottom_jotai);
 	const chat_ui_layer_1_setter = useSetAtom(chat_ui_layer_1_jotai);
 	const [selected_model] = useAtomValue(selected_model_jotai);
-
+	const is_waiting_for_ai_setter = useSetAtom(is_waiting_for_ai_jotai);
 	async function createChat() {
 		const chatId = createId();
 		router.push(`/chat/${chatId}`);
 		chat_input_setter("");
-		chat_history_client_setter((messages) => [
-			...messages,
-			{ chatId, content: chat_input, id: createId(), type: "user" },
-		]);
+		chat_history_client_setter((messages) => {
+			is_waiting_for_ai_setter(true);
+			return [
+				...messages,
+				{ chatId, content: chat_input, id: createId(), type: "user" },
+				{ chatId, content: "", id: createId(), type: "ai" },
+			];
+		});
 		return await create_chat.mutateAsync(
 			{ chatId, prompt: chat_input, model: selected_model },
 			{
@@ -50,9 +55,11 @@ export default function useChatInputInterface() {
 		const chatId = params["chat-id"] as string;
 		chat_input_setter("");
 		chat_history_client_setter((messages) => {
+			is_waiting_for_ai_setter(true);
 			return [
 				...messages,
 				{ chatId, content: chat_input, id: createId(), type: "user" },
+				{ chatId, content: "", id: createId(), type: "ai" },
 			];
 		});
 		send_chat_message.mutateAsync(

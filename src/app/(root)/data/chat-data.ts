@@ -60,9 +60,19 @@ export type ChatHistory = {
 
 export const chat_history_db_jotai = atomWithQuery(() => ({
 	queryKey: ["chat-messages"],
-	queryFn: async ({}) => {
+	queryFn: async ({ client }) => {
 		const [, , chatId] = location.pathname.split("/");
+		console.log(chatId);
+		console.log(client.getQueryData(["chat-messages"]));
 		const chatMessages = await getChatMessagesController(chatId);
+		// if (
+		// 	!(
+		// 		client.getQueryData(["chat-messages"]) as {
+		// 			chatMessages: ChatMessage[];
+		// 		}
+		// 	).chatMessages.length
+		// )
+		// 	return;
 		if (chatMessages) {
 			return chatMessages;
 		}
@@ -86,6 +96,8 @@ export const send_chat_message_jotai = atomWithMutation(() => ({
 		return await sendChatMessageController(chatId, prompt, model);
 	},
 }));
+
+export const is_waiting_for_ai_jotai = atom(false);
 
 export const chats_jotai = atomWithQuery((get) => ({
 	queryKey: ["chats"],
