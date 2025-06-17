@@ -4,9 +4,9 @@ import { ICON_SIZE } from "@/data/constants";
 import { ArrowUp, ChevronDown, X } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import useChatInputInterface from "../interfaces/use-chat-input-interface";
-import { resizeTextArea } from "@/utils/resize-text-area";
 import SelectModel from "./select-model";
 import InteractiveIcon from "@/components/layouts/interactive_icon";
+import TextareaAutosize from "react-textarea-autosize";
 
 export default function ChatInput() {
 	const {
@@ -39,14 +39,11 @@ export default function ChatInput() {
 				</InteractiveIcon>
 			)}
 			<Flex className='flex gap-3 w-full p-3 '>
-				<textarea
+				<TextareaAutosize
 					placeholder='Ask anything'
 					value={chat_input}
 					className='grow w-full max-h-[200px]  min-h-[40px] outline-none resize-none overflow-y-auto bg-transparent gap-3 no-scrollbar'
-					onChange={(e) => {
-						captureChatInput(e.currentTarget.value);
-						resizeTextArea(e);
-					}}
+					onChange={(e) => captureChatInput(e.currentTarget.value)}
 					onKeyDown={(e) => {
 						if (e.key === "Enter" && !e.shiftKey && chat_input) {
 							e.preventDefault();

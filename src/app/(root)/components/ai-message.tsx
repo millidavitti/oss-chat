@@ -8,7 +8,6 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { BeatLoader } from "react-spinners";
 
 export default function AiMessage({ message }: { message: ChatMessage }) {
 	const { copyMessage, hasCopiedMessage } = useAiMessageInterface();
@@ -32,6 +31,7 @@ export default function AiMessage({ message }: { message: ChatMessage }) {
 											PreTag='div'
 											language={match[1]}
 											style={dracula}
+											wrapLongLines
 										>
 											{String(children).replace(/\n$/, "")}
 										</SyntaxHighlighter>

@@ -12,25 +12,10 @@ import { chat_ui_layer_1_jotai } from "../data/chat-ui-state";
 
 export default function ChatThreadOptions({ thread }: { thread: Chat }) {
 	const [delete_chat] = useAtom(delete_chat_jotai);
-
 	const [chats] = useAtom(chats_jotai);
 	const { closeDialog, displayDialog, waitForDialog } = useDialog();
 	const chat_ui_layer_1_setter = useSetAtom(chat_ui_layer_1_jotai);
 
-	async function deleteChat(chatId: string) {
-		displayDialog();
-		if (await new Promise(waitForDialog))
-			await delete_chat.mutateAsync(chatId, {
-				onError() {
-					toast.error("You cannot delete your chat at the moment");
-				},
-				onSuccess() {
-					console.log("first");
-					chats.refetch();
-				},
-			});
-		closeDialog();
-	}
 	return (
 		<Overlay
 			stateFlag='show-chat-thread-options'
@@ -52,7 +37,22 @@ export default function ChatThreadOptions({ thread }: { thread: Chat }) {
 					</ChatThreadOption>
 					<ChatThreadOption
 						className='text-system-error'
-						onClick={() => deleteChat(thread.id)}
+						onClick={() => {
+							async function deleteChat(chatId: string) {
+								displayDialog();
+								if (await new Promise(waitForDialog))
+									await delete_chat.mutateAsync(chatId, {
+										onError() {
+											toast.error("You cannot delete your chat at the moment");
+										},
+										onSuccess() {
+											chats.refetch();
+										},
+									});
+								closeDialog();
+							}
+							deleteChat(thread.id);
+						}}
 					>
 						Delete
 					</ChatThreadOption>
