@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import {
 	chat_history_client_jotai,
 	chat_history_db_jotai,
-	chats_jotai,
 	ChatMessage,
 	Chat,
 	is_waiting_for_ai_jotai,
@@ -25,7 +24,6 @@ export default function useChatHistoryInterface() {
 	);
 	const params = useParams();
 	const [chat_history_db] = useAtom(chat_history_db_jotai);
-	const [chats] = useAtom(chats_jotai);
 	const is_scroll_bottom_setter = useSetAtom(is_scroll_bottom_jotai);
 	const [is_waiting_for_ai, is_waiting_for_ai_setter] = useAtom(
 		is_waiting_for_ai_jotai,
@@ -65,7 +63,6 @@ export default function useChatHistoryInterface() {
 						userMessage,
 						aiMessage,
 					]);
-					if (chat?.title === "New Chat") await chats.refetch();
 				}
 
 				if (chat) {
