@@ -43,9 +43,6 @@ export default function useChatInputInterface() {
 		chat_input_setter("");
 		chat_ui_layer_1_setter("send-chat-message");
 		is_waiting_for_ai_setter(true);
-		(
-			document.querySelector("#scroll-into-view") as HTMLDivElement
-		).scrollIntoView();
 		create_chat.mutateAsync(
 			{ chatId, prompt: chat_input, model: selected_model },
 			{

@@ -31,6 +31,7 @@ export default function useChatHistoryInterface() {
 		is_waiting_for_ai_jotai,
 	);
 	const chat_ui_layer_1_setter = useSetAtom(chat_ui_layer_1_jotai);
+
 	// SSE && Scroll to bottom button
 	useEffect(() => {
 		let aiResponseEventSource: EventSource;
@@ -64,7 +65,7 @@ export default function useChatHistoryInterface() {
 						userMessage,
 						aiMessage,
 					]);
-					await chats.refetch();
+					if (chat?.title === "New Chat") await chats.refetch();
 				}
 
 				if (chat) {
@@ -110,53 +111,11 @@ export default function useChatHistoryInterface() {
 		const messages = root.current;
 		messages?.addEventListener("scroll", deboucedCb);
 		return () => {
-			messageRefs.current = [];
 			aiResponseEventSource?.close();
 			messages?.removeEventListener("scroll", deboucedCb);
 		};
 	}, []);
 
-	// Intersection Observer
-	useEffect(() => {
-		const observer = new IntersectionObserver(
-			([entry]) => {
-				const { target, isIntersecting } = entry;
-				const chatHistory = root.current as HTMLElement;
-				const userMessage =
-					chatHistory?.children[
-						Number((target as HTMLElement).dataset.index) - 2 || 0
-					];
-
-				if (isIntersecting) {
-					console.log(
-						userMessage,
-						Number((target as HTMLElement).dataset.index),
-						isIntersecting,
-						messageRefs.current,
-						messageRefs.current.length,
-					);
-					userMessage?.classList.add("opacity-0", "translate-x-[16px]");
-				} else userMessage?.classList.remove("opacity-0", "translate-x-[16px]");
-			},
-			{
-				threshold: 0.15,
-				root: root.current,
-				rootMargin: "0px 0px -85% 0px",
-			},
-		);
-
-		for (const ref of messageRefs.current) {
-			if (ref && ref.id === "user") observer.observe(ref);
-		}
-
-		return () => {
-			observer.disconnect();
-		};
-	}, [
-		messageRefs.current.length,
-		chat_history_client,
-		chat_history_db.data?.chatMessages,
-	]);
 	return {
 		root,
 		messageRefs,

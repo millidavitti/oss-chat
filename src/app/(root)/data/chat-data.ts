@@ -5,14 +5,14 @@ import { getChatMessagesController } from "@/app/chat/controllers/get-chat-messa
 import { getChatsController } from "@/app/chat/controllers/get-chat-threads.controller";
 import { renameChatController } from "@/app/chat/controllers/rename-chat.controller";
 import { sendChatMessageController } from "@/app/chat/controllers/send-chat-message.controller";
-import { models } from "@/data/constants";
+import { chatModels, resoningModels } from "@/data/constants";
 import { jotaiStore } from "@/data/jotai-store";
 import { atom } from "jotai";
 import { atomWithMutation, atomWithQuery } from "jotai-tanstack-query";
 import { atomWithStorage } from "jotai/utils";
 
 export const user_jotai = atomWithQuery(() => ({
-	queryKey: ["user"],
+	queryKey: [],
 	queryFn: async () => {
 		return await auth();
 	},
@@ -28,7 +28,7 @@ export const create_chat_jotai = atomWithMutation(() => ({
 	}: {
 		chatId: string;
 		prompt: string;
-		model: keyof typeof models;
+		model: Model;
 	}) => {
 		return await createChatController(chatId, prompt, model);
 	},
@@ -60,19 +60,9 @@ export type ChatHistory = {
 
 export const chat_history_db_jotai = atomWithQuery(() => ({
 	queryKey: ["chat-messages"],
-	queryFn: async ({ client }) => {
+	queryFn: async () => {
 		const [, , chatId] = location.pathname.split("/");
-		console.log(chatId);
-		console.log(client.getQueryData(["chat-messages"]));
 		const chatMessages = await getChatMessagesController(chatId);
-		// if (
-		// 	!(
-		// 		client.getQueryData(["chat-messages"]) as {
-		// 			chatMessages: ChatMessage[];
-		// 		}
-		// 	).chatMessages.length
-		// )
-		// 	return;
 		if (chatMessages) {
 			return chatMessages;
 		}
@@ -131,9 +121,12 @@ export const rename_chat_jotai = atomWithMutation(() => ({
 	},
 }));
 
-export type SeletedModel = [keyof typeof models, string];
-export type Model = keyof typeof models;
+export type SeletedModel = [Model, string];
+export type Model = ChatModel | ResoningModel;
+export type ChatModel = keyof typeof chatModels;
+export type ResoningModel = keyof typeof resoningModels;
 export const selected_model_jotai = atomWithStorage<SeletedModel>(
 	"selected_model",
-	["gpt-4.1-mini", "GPT 4.1 Mini"],
+	["gpt-4.1-mini", "OpenAI GPT 4.1 Mini"],
 );
+export type MessageTarget = { target: HTMLDivElement; isIntersecting: boolean };
