@@ -7,13 +7,18 @@ import {
 	chats_jotai,
 	ChatMessage,
 	Chat,
-	chat_jotai,
+	is_waiting_for_ai_jotai,
 } from "../data/chat-data";
 import { queryClient } from "@/data/query-client";
+import { toast } from "sonner";
+import debounce from "lodash.debounce";
+import {
+	chat_ui_layer_1_jotai,
+	is_scroll_bottom_jotai,
+} from "../data/chat-ui-state";
 
 export default function useChatHistoryInterface() {
 	const messageRefs = useRef<HTMLDivElement[]>([]);
-
 	const root = useRef<HTMLDivElement>(null);
 	const [chat_history_client, chat_history_client_setter] = useAtom(
 		chat_history_client_jotai,
@@ -21,25 +26,24 @@ export default function useChatHistoryInterface() {
 	const params = useParams();
 	const [chat_history_db] = useAtom(chat_history_db_jotai);
 	const [chats] = useAtom(chats_jotai);
-	const chat_setter = useSetAtom(chat_jotai);
+	const is_scroll_bottom_setter = useSetAtom(is_scroll_bottom_jotai);
+	const [is_waiting_for_ai, is_waiting_for_ai_setter] = useAtom(
+		is_waiting_for_ai_jotai,
+	);
+	const chat_ui_layer_1_setter = useSetAtom(chat_ui_layer_1_jotai);
 
+	// SSE && Scroll to bottom button
 	useEffect(() => {
-		document
-			.querySelector("#scroll-into-view")
-			?.scrollIntoView({ behavior: "smooth" });
-	}, [chat_history_client[1]?.content]);
+		let aiResponseEventSource: EventSource;
 
-	useEffect(() => {
-		let aiResponse: EventSource;
-
-		if (chat_history_client.length > 1) chat_history_client_setter([]);
 		// SSE
 		(async () => {
-			aiResponse = new EventSource(
+			aiResponseEventSource = new EventSource(
 				`${process.env.NEXT_PUBLIC_API_ENDPOINT}/chats/ai-response/${params["chat-id"]}`,
 				{ withCredentials: true },
 			);
-			aiResponse.onmessage = async (event) => {
+
+			aiResponseEventSource.onmessage = async (event) => {
 				const { aiMessage, userMessage, chat } = JSON.parse(event.data) as {
 					aiMessage?: ChatMessage;
 					chat?: Chat;
@@ -47,18 +51,21 @@ export default function useChatHistoryInterface() {
 				};
 
 				if (aiMessage?.status === "pending") {
-					chat_history_client_setter([userMessage, aiMessage]);
+					is_waiting_for_ai_setter(false);
+					chat_history_client_setter((messages) => [
+						...messages.slice(0, -2),
+						userMessage,
+						aiMessage,
+					]);
 				} else if (aiMessage?.status === "completed") {
-					queryClient.setQueryData(
-						["chat-messages"],
-						({ chatMessages }: { chatMessages: ChatMessage[] }) => {
-							return {
-								chatMessages: [...chatMessages, userMessage, aiMessage],
-							};
-						},
-					);
-					chat_history_client_setter([]);
-					await chats.refetch();
+					chat_ui_layer_1_setter(null);
+					is_waiting_for_ai_setter(false);
+					chat_history_client_setter((messages) => [
+						...messages.slice(0, -2),
+						userMessage,
+						aiMessage,
+					]);
+					if (chat?.title === "New Chat") await chats.refetch();
 				}
 
 				if (chat) {
@@ -73,50 +80,47 @@ export default function useChatHistoryInterface() {
 							};
 						},
 					);
-					chat_setter(chat);
 				}
 			};
-			aiResponse.onerror = (err) => {
+
+			aiResponseEventSource.onerror = (err) => {
+				is_waiting_for_ai_setter(false);
 				console.error("EventSource failed:", err);
+				toast.error("I'm not in the mood to chat right now 😒");
 			};
 		})();
 
-		// Oberser
-		const observer = new IntersectionObserver(
-			([entry]) => {
-				const { target, isIntersecting } = entry;
-				const chatHistory = root.current as HTMLElement;
-				console.log(isIntersecting, target);
-				// Subtracting 2 from target.dataset.id because:
-				// 1. User messages are rendered at even-numbered indexes (the interval is key here), so subtracting 2 aligns the calculation with the correct message element.
-				// Final calculation: Number(target.dataset.id) - 2.
-				if (isIntersecting) {
-					console.log(chatHistory.children);
-					chatHistory?.children[
-						Number((target as HTMLElement).dataset.index) - 2
-					]?.classList.add("opacity-0", "translate-x-[16px]");
-				} else
-					chatHistory?.children[
-						Number((target as HTMLElement).dataset.index) - 2
-					]?.classList.remove("opacity-0", "translate-x-[16px]");
+		//Toggle Scroll to Bottom Button
+
+		const scrollToBottomAnchor = document.querySelector(
+			"#scroll-into-view",
+		) as HTMLDivElement;
+		const deboucedCb = debounce(
+			() => {
+				const { bottom: rootBottom } = root.current!.getBoundingClientRect();
+				const { bottom: anchorBottom } =
+					scrollToBottomAnchor.getBoundingClientRect();
+				const isScrollBottom =
+					rootBottom === anchorBottom &&
+					(anchorBottom / rootBottom) * 100 < 120;
+				is_scroll_bottom_setter(isScrollBottom);
 			},
-			{
-				threshold: 0.15,
-				root: root.current,
-				rootMargin: "0px 0px -85% 0px",
-			},
+			700,
+			{ leading: true },
 		);
-		console.log(messageRefs);
-
-		for (const ref of messageRefs.current) {
-			console.log(ref);
-			if (ref) observer.observe(ref);
-		}
-
+		const messages = root.current;
+		messages?.addEventListener("scroll", deboucedCb);
 		return () => {
-			aiResponse?.close();
-			observer.disconnect();
+			aiResponseEventSource?.close();
+			messages?.removeEventListener("scroll", deboucedCb);
 		};
-	}, [params["chat-id"]]);
-	return { root, messageRefs, chat_history_db, chat_history_client };
+	}, []);
+
+	return {
+		root,
+		messageRefs,
+		chat_history_db,
+		chat_history_client,
+		is_waiting_for_ai,
+	};
 }

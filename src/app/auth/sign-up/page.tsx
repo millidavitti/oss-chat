@@ -19,7 +19,7 @@ export default function SignUp() {
 						size={16}
 						className='stroke-system-on-secondary-container'
 					/>
-					Back to Homepage
+					Back to Chat
 				</Button>
 			</Link>
 			<Suspense>

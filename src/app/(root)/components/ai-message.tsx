@@ -8,7 +8,6 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { BeatLoader } from "react-spinners";
 
 export default function AiMessage({ message }: { message: ChatMessage }) {
 	const { copyMessage, hasCopiedMessage } = useAiMessageInterface();
@@ -67,9 +66,6 @@ export default function AiMessage({ message }: { message: ChatMessage }) {
 						</InteractiveIcon>
 					</Flex>
 				</>
-			)}
-			{Boolean(message.content) || (
-				<BeatLoader size={ICON_SIZE} color='rgb(var(--on-surface))' />
 			)}
 		</Flex>
 	);

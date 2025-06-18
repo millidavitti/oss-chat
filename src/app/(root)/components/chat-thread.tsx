@@ -3,74 +3,46 @@ import Flex from "@/components/layouts/flex";
 import Link from "next/link";
 import ChatThreadOptions from "./chat-thread-options";
 import { Chat } from "../data/chat-data";
-import { AnimatePresence } from "motion/react";
 import { fadeInVariant } from "@/utils/animation-variants";
 import { cn } from "@/utils/cn";
-import Input from "@/components/ui/input";
 import useChatThreadInterface from "../interfaces/use-chat-thread-interface";
-
+import { HashLoader } from "react-spinners";
+import { ICON_SIZE } from "@/data/constants";
+import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 export default function ChatThread({ thread }: { thread: Chat }) {
-	const {
-		displayChatOptions,
-		renameChat,
-		saveChatRename,
-		chat,
-		chatId,
-		chat_ui_layer_1,
-		viewChat,
-		inputRef,
-		cancelChatRename,
-	} = useChatThreadInterface();
+	const { chatId, delete_chat, viewChat } = useChatThreadInterface();
 
 	return (
-		<Flex
-			flex='column'
-			className='overflow-visible shrink-0'
-			variants={fadeInVariant}
-			layout
-			exit={{ transform: "translateY(-48px)", opacity: 0 }}
-			onContextMenu={(e) => {
-				e.preventDefault();
-				displayChatOptions(e.clientX, e.clientY, thread);
-			}}
-		>
-			{!(chat_ui_layer_1 === "rename-chat" && chat?.id === thread.id) && (
-				<Link href={`/chat/${thread.id}`} onClick={() => viewChat(thread)}>
+		<>
+			<ContextMenu>
+				<ContextMenuTrigger asChild>
 					<Flex
-						className={cn(
-							"bg-system-surface-container p-3 rounded-[8px] text-system-on-surface",
-							chatId === thread.id && "bg-system-surface font-bold",
-						)}
+						flex='column'
+						className='overflow-visible shrink-0'
+						variants={fadeInVariant}
+						layout
 					>
-						{thread.title}
-					</Flex>{" "}
-				</Link>
-			)}
-			{chat_ui_layer_1 === "rename-chat" && chat?.id === thread.id && (
-				<form
-					onSubmit={(e) => {
-						e.preventDefault();
-						saveChatRename(thread.id);
-					}}
-					className='w-full'
-					onKeyDown={(e) => {
-						if (e.key === "Escape") cancelChatRename();
-					}}
-				>
-					<Input
-						ref={inputRef}
-						className='w-full'
-						defaultValue={thread.title}
-						onChange={(e) => renameChat(e.currentTarget.value)}
-					/>
-				</form>
-			)}
-
-			{chat === thread && (
-				<AnimatePresence>
-					<ChatThreadOptions thread={thread} />
-				</AnimatePresence>
-			)}
-		</Flex>
+						<Link href={`/chat/${thread.id}`} onClick={() => viewChat(thread)}>
+							<Flex
+								className={cn(
+									"bg-system-surface-container gap-3 p-3 rounded-[8px] hover:font-medium body-medium md:body-large",
+									chatId === thread.id && "bg-system-surface font-medium",
+								)}
+							>
+								{thread.title}{" "}
+								{delete_chat.isPending &&
+									thread.id === delete_chat.variables && (
+										<HashLoader
+											size={ICON_SIZE}
+											color='rgb(var(--on-surface))'
+										/>
+									)}
+							</Flex>
+						</Link>
+					</Flex>
+				</ContextMenuTrigger>
+				{<ChatThreadOptions thread={thread} />}
+			</ContextMenu>
+		</>
 	);
 }

@@ -5,9 +5,11 @@ import { getChatMessagesController } from "@/app/chat/controllers/get-chat-messa
 import { getChatsController } from "@/app/chat/controllers/get-chat-threads.controller";
 import { renameChatController } from "@/app/chat/controllers/rename-chat.controller";
 import { sendChatMessageController } from "@/app/chat/controllers/send-chat-message.controller";
+import { chatModels, resoningModels } from "@/data/constants";
 import { jotaiStore } from "@/data/jotai-store";
 import { atom } from "jotai";
 import { atomWithMutation, atomWithQuery } from "jotai-tanstack-query";
+import { atomWithStorage } from "jotai/utils";
 
 export const user_jotai = atomWithQuery(() => ({
 	queryKey: [],
@@ -22,11 +24,13 @@ export const create_chat_jotai = atomWithMutation(() => ({
 	mutationFn: async ({
 		chatId,
 		prompt,
+		model,
 	}: {
 		chatId: string;
 		prompt: string;
+		model: Model;
 	}) => {
-		return await createChatController(chatId, prompt);
+		return await createChatController(chatId, prompt, model);
 	},
 }));
 
@@ -56,7 +60,7 @@ export type ChatHistory = {
 
 export const chat_history_db_jotai = atomWithQuery(() => ({
 	queryKey: ["chat-messages"],
-	queryFn: async ({}) => {
+	queryFn: async () => {
 		const [, , chatId] = location.pathname.split("/");
 		const chatMessages = await getChatMessagesController(chatId);
 		if (chatMessages) {
@@ -73,18 +77,24 @@ export const send_chat_message_jotai = atomWithMutation(() => ({
 	mutationFn: async ({
 		chatId,
 		prompt,
+		model,
 	}: {
 		prompt: string;
 		chatId: string;
+		model: Model;
 	}) => {
-		return await sendChatMessageController(chatId, prompt);
+		return await sendChatMessageController(chatId, prompt, model);
 	},
 }));
+
+export const is_waiting_for_ai_jotai = atom(false);
 
 export const chats_jotai = atomWithQuery((get) => ({
 	queryKey: ["chats"],
 	queryFn: async () => {
-		const chats = await getChatsController(get(user_jotai).data!.guest!.id);
+		const chats = await getChatsController(
+			(get(user_jotai).data!.user?.id || get(user_jotai).data!.guest?.id)!,
+		);
 		if (chats) {
 			const [, , chatId] = location.pathname.split("/");
 
@@ -110,3 +120,13 @@ export const rename_chat_jotai = atomWithMutation(() => ({
 		return await renameChatController(chatId, title);
 	},
 }));
+
+export type SeletedModel = [Model, string];
+export type Model = ChatModel | ResoningModel;
+export type ChatModel = keyof typeof chatModels;
+export type ResoningModel = keyof typeof resoningModels;
+export const selected_model_jotai = atomWithStorage<SeletedModel>(
+	"selected_model",
+	["gpt-4.1-mini", "OpenAI GPT 4.1 Mini"],
+);
+export type MessageTarget = { target: HTMLDivElement; isIntersecting: boolean };

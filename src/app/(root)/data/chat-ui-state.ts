@@ -11,3 +11,5 @@ export const mouse_position_jotai = atom<{ x: number; y: number }>({
 	x: 0,
 	y: 0,
 });
+
+export const is_scroll_bottom_jotai = atom(false);

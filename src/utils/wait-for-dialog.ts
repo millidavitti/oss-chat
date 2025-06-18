@@ -12,7 +12,7 @@ export function waitForDialog(resolve: (value: boolean) => void) {
 			console.log("Canceled");
 			resolve(false);
 		} else {
-			setTimeout(checkTask, 2000);
+			setTimeout(checkTask, 1500);
 		}
 	};
 	checkTask();

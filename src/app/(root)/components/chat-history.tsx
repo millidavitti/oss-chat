@@ -3,18 +3,23 @@ import Flex from "@/components/layouts/flex";
 import UserMessageComponent from "./user-message";
 import AiMessageComponent from "./ai-message";
 import useChatHistoryInterface from "../interfaces/use-chat-history-interface";
-import { HashLoader } from "react-spinners";
+import { BeatLoader, HashLoader } from "react-spinners";
 import { ICON_SIZE } from "@/data/constants";
 import ChatInput from "./chat-input";
 
 export default function ChatHistory() {
-	const { messageRefs, root, chat_history_db, chat_history_client } =
-		useChatHistoryInterface();
+	const {
+		messageRefs,
+		root,
+		chat_history_db,
+		chat_history_client,
+		is_waiting_for_ai,
+	} = useChatHistoryInterface();
 
 	return (
 		<Flex
 			flex='column'
-			className='grow no-scrollbar h-full overflow-x-clip relative outline'
+			className='grow h-full overflow-x-clip relative '
 			id='chat-history'
 			ref={root}
 		>
@@ -32,11 +37,9 @@ export default function ChatHistory() {
 							<UserMessageComponent
 								key={message.id}
 								message={message}
+								index={index}
 								ref={(node) => {
-									if (node) {
-										node.dataset.index = index.toString();
-										messageRefs.current.push(node!);
-									}
+									if (node) messageRefs.current.push(node!);
 								}}
 							>
 								{message.content}
@@ -50,20 +53,26 @@ export default function ChatHistory() {
 						<UserMessageComponent
 							key={message.id}
 							message={message}
+							index={index}
 							ref={(node) => {
-								if (node) {
-									node.dataset.index = index.toString();
-									messageRefs.current.push(node!);
-								}
+								if (node) messageRefs.current.push(node!);
 							}}
 						>
 							{message.content}
 						</UserMessageComponent>
 					);
-				else return <AiMessageComponent key={message.id} message={message} />;
+				else if (message.type === "ai")
+					return <AiMessageComponent key={message.id} message={message} />;
 			})}
+			{is_waiting_for_ai && (
+				<BeatLoader
+					size={ICON_SIZE}
+					id='scroll-into-view'
+					color='rgb(var(--on-surface))'
+				/>
+			)}
+			<div id='scroll-into-view' className='p-3'></div>
 			<ChatInput />
-			<div id='scroll-into-view'></div>
 		</Flex>
 	);
 }
