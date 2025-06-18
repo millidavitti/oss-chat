@@ -65,7 +65,7 @@ export default function useChatHistoryInterface() {
 						userMessage,
 						aiMessage,
 					]);
-					if (chat?.title === "New Chat") await chats.refetch();
+					await chats.refetch();
 				}
 
 				if (chat) {
