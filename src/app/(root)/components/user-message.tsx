@@ -2,11 +2,10 @@ import Flex from "@/components/layouts/flex";
 import InteractiveIcon from "@/components/layouts/interactive_icon";
 import { ICON_SIZE } from "@/data/constants";
 import { cn } from "@/utils/cn";
-import { Copy, CopyCheck, Edit, Expand, Shrink } from "lucide-react";
+import { Copy, CopyCheck, Expand, Shrink } from "lucide-react";
 import { ReactNode } from "react";
 import useUserMessageInterface from "../interfaces/use-user-message-interface";
 import { ChatMessage } from "../data/chat-data";
-import Button from "@/components/ui/button";
 import { HTMLMotionProps } from "motion/react";
 
 interface UserMessage extends Omit<HTMLMotionProps<"div">, "classID"> {
@@ -29,13 +28,15 @@ export default function UserMessage({
 		copyMessage,
 		hasCopiedMessage,
 	} = useUserMessageInterface();
+
 	return (
 		<Flex
 			flex='column'
-			id={message.type}
+			id={message.id}
 			data-index={index}
+			data-type='user'
 			className={cn(
-				"group shrink-0 p-3 items-end sticky top-0 overflow-visible transition-transform",
+				"group shrink-0 p-3 items-end overflow-visible transition-transform",
 				className,
 				shouldClamp == false && "z-10",
 			)}
@@ -58,7 +59,7 @@ export default function UserMessage({
 
 			{/* Message Options */}
 
-			<Flex className='gap-3 ml-auto p-3 hidden absolute rounded-[12px] -bottom-11 backdrop-blur-lg right-3 group-hover:flex'>
+			<Flex className='gap-3 ml-auto p-3 hidden absolute rounded-[8px] -bottom-11 bg-system-secondary-container text-system-on-secondary-container right-3 group-hover:flex'>
 				<InteractiveIcon
 					className='p-0 overflow-clip'
 					onClick={() => copyMessage(message.content)}

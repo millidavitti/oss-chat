@@ -71,7 +71,7 @@ export default function ChatHistory() {
 					color='rgb(var(--on-surface))'
 				/>
 			)}
-			<div id='scroll-into-view'></div>
+			<div id='scroll-into-view' className='p-3'></div>
 			<ChatInput />
 		</Flex>
 	);

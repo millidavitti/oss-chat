@@ -11,6 +11,7 @@ import { ICON_SIZE } from "@/data/constants";
 import { listVariant } from "@/utils/animation-variants";
 import { AnimatePresence } from "motion/react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Layers2 } from "lucide-react";
 
 export default function ChatThreads() {
 	const [chats] = useAtom(chats_jotai);
@@ -45,14 +46,24 @@ export default function ChatThreads() {
 					</AnimatePresence>
 				</Flex>
 			)}
+			{chats.isLoading || Boolean(chats.data?.chats.length) || (
+				<Flex
+					flex='column'
+					className='gap-3 h-full w-full justify-center items-center'
+				>
+					<Layers2 size={ICON_SIZE} className='stroke-system-on-surface' />
+					<p className='body-large md:body-medium text-center'>
+						This area’s emptier than a politician&apos;s promise.
+					</p>
+				</Flex>
+			)}
 			<Flex className='shrink-0'>
 				{user.data?.isAuthenticated ? (
 					<Link
 						href='/auth/sign-out'
 						onClick={() => {
 							chat_setter(null);
-							queryClient.setQueryData(["user"], null);
-							queryClient.setQueryData(["chats"], []);
+							queryClient.setQueryData(["chats"], { chats: [] });
 						}}
 					>
 						<Button>Sign Out</Button>

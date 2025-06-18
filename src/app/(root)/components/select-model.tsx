@@ -9,7 +9,7 @@ import {
 import { useAtom } from "jotai";
 import { selected_model_jotai, SeletedModel } from "../data/chat-data";
 import { Box } from "lucide-react";
-import { ICON_SIZE, models } from "@/data/constants";
+import { chatModels, ICON_SIZE, resoningModels } from "@/data/constants";
 import { cn } from "@/utils/cn";
 
 export default function SelectModel() {
@@ -26,35 +26,55 @@ export default function SelectModel() {
 					<DropdownMenuContent className='text-system-on-surface flex flex-wrap max-w-[480px] grow w-full max-h-[480px] p-3 rounded-[12px] bg-system-surface-container gap-3 translate-x-12'>
 						<Flex flex='column' className='gap-3'>
 							<DropdownMenuLabel className='rounded-[12px] font-semibold'>
-								OpenAI
+								Chat
 							</DropdownMenuLabel>
 							<Flex flex='column' className='h-[320px]'>
-								{Object.entries(models).map(([model, formatedModelName]) => (
-									<DropdownMenuItem
-										key={model}
-										className={cn(
-											"outline-none shrink-0 p-3 hover:font-medium cursor-pointer rounded-[8px]",
-											selected_model === model && "bg-system-surface",
-										)}
-										onClick={() => {
-											selected_model_setter([
-												model,
-												formatedModelName,
-											] as SeletedModel);
-										}}
-									>
-										{formatedModelName}
-									</DropdownMenuItem>
-								))}
+								{Object.entries(chatModels).map(
+									([model, formatedModelName]) => (
+										<DropdownMenuItem
+											key={model}
+											className={cn(
+												"outline-none shrink-0 p-3 hover:font-medium cursor-pointer rounded-[8px]",
+												selected_model === model && "bg-system-surface",
+											)}
+											onClick={() => {
+												selected_model_setter([
+													model,
+													formatedModelName,
+												] as SeletedModel);
+											}}
+										>
+											{formatedModelName}
+										</DropdownMenuItem>
+									),
+								)}
 							</Flex>
 						</Flex>
 						<Flex flex='column' className='gap-3'>
 							<DropdownMenuLabel className='rounded-[12px] font-semibold'>
-								Gemini
+								Reasoning
 							</DropdownMenuLabel>
-							<DropdownMenuItem className='outline-none p-3 hover:bg-system-surface cursor-pointer rounded-[8px]'>
-								Gemini 2.5 Flash
-							</DropdownMenuItem>
+							<Flex flex='column' className='h-[320px]'>
+								{Object.entries(resoningModels).map(
+									([model, formatedModelName]) => (
+										<DropdownMenuItem
+											key={model}
+											className={cn(
+												"outline-none shrink-0 p-3 hover:font-medium cursor-pointer rounded-[8px]",
+												selected_model === model && "bg-system-surface",
+											)}
+											onClick={() => {
+												selected_model_setter([
+													model,
+													formatedModelName,
+												] as SeletedModel);
+											}}
+										>
+											{formatedModelName}
+										</DropdownMenuItem>
+									),
+								)}
+							</Flex>
 						</Flex>
 					</DropdownMenuContent>
 				</DropdownMenu>
